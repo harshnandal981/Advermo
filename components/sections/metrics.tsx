@@ -2,27 +2,27 @@ import { ArrowUpRight } from "lucide-react";
 
 const metrics = [
   {
-    value: "500+",
-    label: "Active Listings",
-    trend: "+45%",
+    value: "1,200+",
+    label: "Active Ad Spots",
+    trend: "+60%",
     period: "vs last quarter",
   },
   {
-    value: "50+",
-    label: "Cities Covered",
-    trend: "+30%",
+    value: "100+",
+    label: "Venue Partners",
+    trend: "+45%",
     period: "expansion rate",
   },
   {
-    value: "10,000+",
-    label: "Total Bookings",
-    trend: "+120%",
+    value: "5M+",
+    label: "Monthly Impressions",
+    trend: "+150%",
     period: "YoY growth",
   },
   {
-    value: "₹2.5 Cr",
+    value: "₹50L",
     label: "GMV Generated",
-    trend: "+85%",
+    trend: "+110%",
     period: "revenue growth",
   },
 ];

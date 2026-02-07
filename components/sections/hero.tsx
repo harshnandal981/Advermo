@@ -4,7 +4,7 @@ import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-const spaceTypes = ["Workspace", "Event", "Studio", "Stay"];
+const spaceTypes = ["Cafés", "Gyms", "Malls", "Colleges", "Transit", "Restaurants"];
 
 export default function Hero() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -19,16 +19,15 @@ export default function Hero() {
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
           {/* Heading */}
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            Discover & Book Spaces
+            Discover High-Traffic
             <br />
             <span className="bg-gradient-to-r from-primary via-purple-500 to-accent bg-clip-text text-transparent">
-              That Fit Your Vision
+              Ad Spaces Instantly
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Find the perfect workspace, studio, venue, or event hall for your next project.
-            Book instantly, pay securely.
+            Rent ad placements in premium venues across cities. Reach your audience where they spend time.
           </p>
 
           {/* Space Type Filters */}
@@ -55,13 +54,13 @@ export default function Hero() {
                 <MapPin className="h-5 w-5 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Enter city or area..."
+                  placeholder="Enter city or venue type..."
                   className="flex-1 bg-transparent border-none outline-none text-sm"
                 />
               </div>
               <Button size="lg" className="md:px-8">
                 <Search className="h-5 w-5 mr-2" />
-                Search Spaces
+                Search Ad Spaces
               </Button>
             </div>
           </div>
@@ -69,26 +68,26 @@ export default function Hero() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button size="lg" variant="outline">
-              Explore All Spaces
+              Explore Ad Spaces
             </Button>
             <Button size="lg" className="bg-gradient-to-r from-primary to-purple-600">
-              List Your Space
+              List Your Venue
             </Button>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto">
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-primary">500+</div>
-              <div className="text-sm text-muted-foreground mt-1">Spaces Listed</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary">1,200+</div>
+              <div className="text-sm text-muted-foreground mt-1">Ad Spots</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-accent">50+</div>
-              <div className="text-sm text-muted-foreground mt-1">Cities Covered</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">100+</div>
+              <div className="text-sm text-muted-foreground mt-1">Venue Partners</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-purple-500">10K+</div>
-              <div className="text-sm text-muted-foreground mt-1">Happy Bookings</div>
+              <div className="text-3xl md:text-4xl font-bold text-purple-500">5M+</div>
+              <div className="text-sm text-muted-foreground mt-1">Monthly Impressions</div>
             </div>
           </div>
         </div>

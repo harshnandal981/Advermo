@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Space } from "@/types";
-import { MapPin, Users, Star } from "lucide-react";
+import { AdSpace } from "@/types";
+import { MapPin, Users, Star, Eye } from "lucide-react";
 import { formatPrice, formatPriceUnit } from "@/lib/utils";
 
 interface SpaceCardProps {
-  space: Space;
+  space: AdSpace;
 }
 
 export default function SpaceCard({ space }: SpaceCardProps) {
@@ -26,7 +26,7 @@ export default function SpaceCard({ space }: SpaceCardProps) {
             </div>
           )}
           <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs font-medium capitalize">
-            {space.type}
+            {space.placement}
           </div>
         </div>
 
@@ -45,13 +45,19 @@ export default function SpaceCard({ space }: SpaceCardProps) {
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-1 text-muted-foreground">
               <Users className="h-4 w-4" />
-              <span>{space.capacity} people</span>
+              <span>{space.dailyFootfall.toLocaleString('en-IN')}/day</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium">{space.rating}</span>
-              <span className="text-muted-foreground">({space.reviewCount})</span>
+            <div className="flex items-center gap-1 text-muted-foreground">
+              <Eye className="h-4 w-4" />
+              <span>{(space.monthlyImpressions / 1000).toFixed(0)}K/mo</span>
             </div>
+          </div>
+          
+          {/* Rating */}
+          <div className="flex items-center gap-1 text-sm">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="font-medium">{space.rating}</span>
+            <span className="text-muted-foreground">({space.reviewCount})</span>
           </div>
 
           {/* Price */}

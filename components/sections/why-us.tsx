@@ -4,22 +4,22 @@ const features = [
   {
     icon: Target,
     title: "The Problem",
-    description: "Finding and booking quality spaces is fragmented, time-consuming, and lacks transparency in pricing and availability.",
+    description: "Offline advertising is fragmented. Brands struggle to find and book high-traffic ad placements with verified footfall data.",
   },
   {
     icon: Lightbulb,
     title: "Our Solution",
-    description: "A unified platform connecting space seekers with verified hosts. Instant booking, transparent pricing, and seamless experience.",
+    description: "Unified marketplace connecting brands with venue owners. Instant booking, verified footfall metrics, transparent pricing.",
   },
   {
     icon: DollarSign,
     title: "Revenue Model",
-    description: "Commission-based (10-15% per booking) + Premium host subscriptions + Featured listing packages.",
+    description: "10-15% commission per campaign + Premium venue subscriptions + Featured placement packages.",
   },
   {
     icon: TrendingUp,
     title: "Market Opportunity",
-    description: "$50B+ global flexible space market. Growing demand for remote work, events, and creative spaces.",
+    description: "Hyperlocal advertising market growing 30% YoY. SMBs and D2C brands need measurable offline reach.",
   },
 ];
 
@@ -28,7 +28,7 @@ export default function WhyUs() {
     <section className="py-20 bg-gradient-to-b from-background to-primary/5">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold">Why SpaceHub?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Why Advermo?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Solving real problems with a scalable, investor-ready business model
           </p>

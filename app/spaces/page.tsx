@@ -1,65 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import { spaces, amenitiesList } from "@/lib/data";
-import { SpaceType, SortOption } from "@/types";
+import { adSpaces } from "@/lib/data";
+import { AdSpaceType, SortOption } from "@/types";
 import SpaceCard from "@/components/ui/space-card";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, X } from "lucide-react";
 
 const sortOptions: SortOption[] = [
+  { label: "Highest Footfall", value: "footfall" },
   { label: "Price: Low to High", value: "price-low" },
   { label: "Price: High to Low", value: "price-high" },
+  { label: "Best CPM", value: "cpm" },
   { label: "Highest Rated", value: "rating" },
-  { label: "Most Popular", value: "popularity" },
+  { label: "Trending Venues", value: "popularity" },
 ];
 
-const spaceTypes: { label: string; value: SpaceType }[] = [
-  { label: "Workspace", value: "workspace" },
-  { label: "Event Hall", value: "event" },
-  { label: "Studio", value: "studio" },
-  { label: "Co-Living", value: "stay" },
+const adFormats: { label: string; value: AdSpaceType }[] = [
+  { label: "Poster Wall", value: "poster" },
+  { label: "Digital Screen", value: "screen" },
+  { label: "Table Tent", value: "table-tent" },
+  { label: "Counter Branding", value: "counter" },
+  { label: "Menu Placement", value: "menu" },
+  { label: "Outdoor Billboard", value: "outdoor" },
+];
+
+const venueTypes: string[] = [
+  "Café",
+  "Gym",
+  "Mall",
+  "College",
+  "Transit",
+  "Restaurant",
+  "Co-working",
+];
+
+const footfallRanges: { label: string; min: number; max: number }[] = [
+  { label: "0 - 1,000/day", min: 0, max: 1000 },
+  { label: "1,000 - 5,000/day", min: 1000, max: 5000 },
+  { label: "5,000 - 10,000/day", min: 5000, max: 10000 },
+  { label: "10,000+/day", min: 10000, max: Infinity },
 ];
 
 export default function SpacesPage() {
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState<SpaceType[]>([]);
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
-  const [minCapacity, setMinCapacity] = useState(0);
+  const [selectedFormats, setSelectedFormats] = useState<AdSpaceType[]>([]);
+  const [selectedVenues, setSelectedVenues] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 400000]);
+  const [selectedFootfall, setSelectedFootfall] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<string>("popularity");
 
-  const toggleType = (type: SpaceType) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+  const toggleFormat = (format: AdSpaceType) => {
+    setSelectedFormats((prev) =>
+      prev.includes(format) ? prev.filter((t) => t !== format) : [...prev, format]
     );
   };
 
-  const toggleAmenity = (amenity: string) => {
-    setSelectedAmenities((prev) =>
-      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
+  const toggleVenue = (venue: string) => {
+    setSelectedVenues((prev) =>
+      prev.includes(venue) ? prev.filter((v) => v !== venue) : [...prev, venue]
     );
   };
 
-  // Filter and sort spaces
-  let filteredSpaces = spaces.filter((space) => {
-    const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(space.type);
-    const priceMatch = space.price >= priceRange[0] && space.price <= priceRange[1];
-    const capacityMatch = space.capacity >= minCapacity;
-    const amenitiesMatch =
-      selectedAmenities.length === 0 ||
-      selectedAmenities.every((amenity) => space.amenities.includes(amenity));
+  // Filter and sort ad spaces
+  let filteredSpaces = adSpaces.filter((adSpace) => {
+    const formatMatch = selectedFormats.length === 0 || selectedFormats.includes(adSpace.type);
+    const venueMatch = selectedVenues.length === 0 || selectedVenues.includes(adSpace.venueType);
+    const priceMatch = adSpace.price >= priceRange[0] && adSpace.price <= priceRange[1];
+    
+    let footfallMatch = true;
+    if (selectedFootfall !== null) {
+      const range = footfallRanges[selectedFootfall];
+      footfallMatch = adSpace.dailyFootfall >= range.min && adSpace.dailyFootfall <= range.max;
+    }
 
-    return typeMatch && priceMatch && capacityMatch && amenitiesMatch;
+    return formatMatch && venueMatch && priceMatch && footfallMatch;
   });
 
-  // Sort spaces
+  // Sort ad spaces
   filteredSpaces = filteredSpaces.sort((a, b) => {
     switch (sortBy) {
+      case "footfall":
+        return b.dailyFootfall - a.dailyFootfall;
       case "price-low":
         return a.price - b.price;
       case "price-high":
         return b.price - a.price;
+      case "cpm":
+        const cpmA = (a.price / a.monthlyImpressions) * 1000;
+        const cpmB = (b.price / b.monthlyImpressions) * 1000;
+        return cpmA - cpmB;
       case "rating":
         return b.rating - a.rating;
       case "popularity":
@@ -70,23 +100,26 @@ export default function SpacesPage() {
   });
 
   const clearFilters = () => {
-    setSelectedTypes([]);
-    setSelectedAmenities([]);
-    setPriceRange([0, 200000]);
-    setMinCapacity(0);
+    setSelectedFormats([]);
+    setSelectedVenues([]);
+    setPriceRange([0, 400000]);
+    setSelectedFootfall(null);
   };
 
   const activeFilterCount =
-    selectedTypes.length + selectedAmenities.length + (minCapacity > 0 ? 1 : 0);
+    selectedFormats.length + selectedVenues.length + (selectedFootfall !== null ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-to-b from-primary/10 to-background border-b">
         <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold mb-4">Explore Spaces</h1>
+          <h1 className="text-4xl font-bold mb-4">Explore Ad Spaces</h1>
+          <p className="text-muted-foreground mb-2">
+            Find high-traffic placements across premium venues
+          </p>
           <p className="text-muted-foreground">
-            Showing {filteredSpaces.length} of {spaces.length} spaces
+            Showing {filteredSpaces.length} of {adSpaces.length} ad spaces
           </p>
         </div>
       </div>
@@ -108,19 +141,56 @@ export default function SpacesPage() {
                 )}
               </div>
 
-              {/* Space Type */}
+              {/* Ad Format */}
               <div className="space-y-3">
-                <h3 className="font-medium">Space Type</h3>
+                <h3 className="font-medium">Ad Format</h3>
                 <div className="space-y-2">
-                  {spaceTypes.map((type) => (
-                    <label key={type.value} className="flex items-center gap-2 cursor-pointer">
+                  {adFormats.map((format) => (
+                    <label key={format.value} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={selectedTypes.includes(type.value)}
-                        onChange={() => toggleType(type.value)}
+                        checked={selectedFormats.includes(format.value)}
+                        onChange={() => toggleFormat(format.value)}
                         className="rounded border-gray-300"
                       />
-                      <span className="text-sm">{type.label}</span>
+                      <span className="text-sm">{format.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Venue Type */}
+              <div className="space-y-3">
+                <h3 className="font-medium">Venue Type</h3>
+                <div className="space-y-2">
+                  {venueTypes.map((venue) => (
+                    <label key={venue} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedVenues.includes(venue)}
+                        onChange={() => toggleVenue(venue)}
+                        className="rounded border-gray-300"
+                      />
+                      <span className="text-sm">{venue}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Daily Footfall */}
+              <div className="space-y-3">
+                <h3 className="font-medium">Daily Footfall</h3>
+                <div className="space-y-2">
+                  {footfallRanges.map((range, index) => (
+                    <label key={index} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="footfall"
+                        checked={selectedFootfall === index}
+                        onChange={() => setSelectedFootfall(selectedFootfall === index ? null : index)}
+                        className="rounded-full border-gray-300"
+                      />
+                      <span className="text-sm">{range.label}</span>
                     </label>
                   ))}
                 </div>
@@ -133,7 +203,7 @@ export default function SpacesPage() {
                   <input
                     type="range"
                     min="0"
-                    max="200000"
+                    max="400000"
                     step="1000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
@@ -142,36 +212,6 @@ export default function SpacesPage() {
                   <div className="text-sm text-muted-foreground">
                     Up to ₹{priceRange[1].toLocaleString("en-IN")}
                   </div>
-                </div>
-              </div>
-
-              {/* Capacity */}
-              <div className="space-y-3">
-                <h3 className="font-medium">Minimum Capacity</h3>
-                <input
-                  type="number"
-                  value={minCapacity}
-                  onChange={(e) => setMinCapacity(parseInt(e.target.value) || 0)}
-                  placeholder="0"
-                  className="w-full px-3 py-2 border rounded-lg bg-background"
-                />
-              </div>
-
-              {/* Amenities */}
-              <div className="space-y-3">
-                <h3 className="font-medium">Amenities</h3>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {amenitiesList.map((amenity) => (
-                    <label key={amenity} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedAmenities.includes(amenity)}
-                        onChange={() => toggleAmenity(amenity)}
-                        className="rounded border-gray-300"
-                      />
-                      <span className="text-sm">{amenity}</span>
-                    </label>
-                  ))}
                 </div>
               </div>
             </div>
@@ -194,7 +234,7 @@ export default function SpacesPage() {
             {/* Sort */}
             <div className="flex items-center justify-between mb-6">
               <div className="text-sm text-muted-foreground">
-                {filteredSpaces.length} spaces found
+                {filteredSpaces.length} ad spaces found
               </div>
               <select
                 value={sortBy}
@@ -209,7 +249,7 @@ export default function SpacesPage() {
               </select>
             </div>
 
-            {/* Spaces Grid */}
+            {/* Ad Spaces Grid */}
             {filteredSpaces.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredSpaces.map((space) => (
@@ -218,7 +258,7 @@ export default function SpacesPage() {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-xl font-medium mb-2">No spaces found</p>
+                <p className="text-xl font-medium mb-2">No ad spaces found</p>
                 <p className="text-muted-foreground mb-4">Try adjusting your filters</p>
                 <Button onClick={clearFilters} variant="outline">
                   Clear Filters
@@ -242,34 +282,69 @@ export default function SpacesPage() {
             <div className="p-4 space-y-6">
               {/* Same filter content as desktop */}
               <div className="space-y-3">
-                <h3 className="font-medium">Space Type</h3>
+                <h3 className="font-medium">Ad Format</h3>
                 <div className="space-y-2">
-                  {spaceTypes.map((type) => (
-                    <label key={type.value} className="flex items-center gap-2">
+                  {adFormats.map((format) => (
+                    <label key={format.value} className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        checked={selectedTypes.includes(type.value)}
-                        onChange={() => toggleType(type.value)}
+                        checked={selectedFormats.includes(format.value)}
+                        onChange={() => toggleFormat(format.value)}
                       />
-                      <span className="text-sm">{type.label}</span>
+                      <span className="text-sm">{format.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h3 className="font-medium">Amenities</h3>
+                <h3 className="font-medium">Venue Type</h3>
                 <div className="space-y-2">
-                  {amenitiesList.map((amenity) => (
-                    <label key={amenity} className="flex items-center gap-2">
+                  {venueTypes.map((venue) => (
+                    <label key={venue} className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        checked={selectedAmenities.includes(amenity)}
-                        onChange={() => toggleAmenity(amenity)}
+                        checked={selectedVenues.includes(venue)}
+                        onChange={() => toggleVenue(venue)}
                       />
-                      <span className="text-sm">{amenity}</span>
+                      <span className="text-sm">{venue}</span>
                     </label>
                   ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-medium">Daily Footfall</h3>
+                <div className="space-y-2">
+                  {footfallRanges.map((range, index) => (
+                    <label key={index} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="footfall-mobile"
+                        checked={selectedFootfall === index}
+                        onChange={() => setSelectedFootfall(selectedFootfall === index ? null : index)}
+                      />
+                      <span className="text-sm">{range.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-medium">Price Range</h3>
+                <div className="space-y-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="400000"
+                    step="1000"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="w-full"
+                  />
+                  <div className="text-sm text-muted-foreground">
+                    Up to ₹{priceRange[1].toLocaleString("en-IN")}
+                  </div>
                 </div>
               </div>
 
