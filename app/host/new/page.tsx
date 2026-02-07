@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Upload, Check } from "lucide-react";
 
-const steps = ["Space Details", "Pricing", "Photos", "Availability", "Review"];
+const steps = ["Ad Spot Details", "Pricing & Metrics", "Photos", "Availability", "Review"];
 
 export default function NewListingPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -26,8 +26,8 @@ export default function NewListingPage() {
       {/* Header */}
       <div className="bg-gradient-to-b from-primary/10 to-background border-b">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-2">List Your Space</h1>
-          <p className="text-muted-foreground">Get your space listed in just a few steps</p>
+          <h1 className="text-3xl font-bold mb-2">List Your Ad Spot</h1>
+          <p className="text-muted-foreground">Monetize your venue by listing advertising space</p>
         </div>
       </div>
 
@@ -66,62 +66,110 @@ export default function NewListingPage() {
         {/* Form Content */}
         <div className="max-w-2xl mx-auto">
           <div className="p-8 rounded-2xl bg-card border">
-            {/* Step 0: Space Details */}
+            {/* Step 0: Ad Spot Details */}
             {currentStep === 0 && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Tell us about your space</h2>
+                <h2 className="text-2xl font-bold">Tell us about your ad spot</h2>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Space Name</label>
+                  <label className="block text-sm font-medium mb-2">Ad Spot Name</label>
                   <input
                     type="text"
-                    placeholder="e.g., Modern Creative Studio"
-                    className="w-full px-4 py-3 border rounded-lg bg-background"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Space Type</label>
-                  <select className="w-full px-4 py-3 border rounded-lg bg-background">
-                    <option>Select type...</option>
-                    <option>Workspace</option>
-                    <option>Event Hall</option>
-                    <option>Studio</option>
-                    <option>Co-Living Space</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
-                  <textarea
-                    rows={5}
-                    placeholder="Describe your space, its features, and what makes it special..."
+                    placeholder="e.g., CCD Coffee - Koramangala"
                     className="w-full px-4 py-3 border rounded-lg bg-background"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Location</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Bandra West, Mumbai"
-                      className="w-full px-4 py-3 border rounded-lg bg-background"
-                    />
+                    <label className="block text-sm font-medium mb-2">Ad Format</label>
+                    <select className="w-full px-4 py-3 border rounded-lg bg-background">
+                      <option>Select format...</option>
+                      <option>Poster Wall</option>
+                      <option>Digital Screen</option>
+                      <option>Table Tent</option>
+                      <option>Counter Branding</option>
+                      <option>Menu Placement</option>
+                      <option>Outdoor Billboard</option>
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Capacity</label>
+                    <label className="block text-sm font-medium mb-2">Venue Type</label>
+                    <select className="w-full px-4 py-3 border rounded-lg bg-background">
+                      <option>Select venue...</option>
+                      <option>Café</option>
+                      <option>Gym</option>
+                      <option>Mall</option>
+                      <option>College</option>
+                      <option>Transit</option>
+                      <option>Restaurant</option>
+                      <option>Co-working</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Describe your ad spot, its visibility, and why it's valuable for advertisers..."
+                    className="w-full px-4 py-3 border rounded-lg bg-background"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Location/Address</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Koramangala 5th Block, Bangalore"
+                    className="w-full px-4 py-3 border rounded-lg bg-background"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Daily Footfall</label>
                     <input
                       type="number"
-                      placeholder="Number of people"
+                      placeholder="e.g., 2500"
                       className="w-full px-4 py-3 border rounded-lg bg-background"
                     />
+                    <p className="text-xs text-muted-foreground mt-1">Average visitors per day</p>
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Monthly Impressions</label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 75000"
+                      className="w-full px-4 py-3 border rounded-lg bg-background"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Estimated monthly views</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Demographics</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Young professionals, students, age 20-35"
+                    className="w-full px-4 py-3 border rounded-lg bg-background"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Describe your typical audience</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Peak Hours</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 8 AM - 12 PM, 6 PM - 9 PM"
+                    className="w-full px-4 py-3 border rounded-lg bg-background"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">When does your venue see the most traffic?</p>
                 </div>
               </div>
             )}
 
-            {/* Step 1: Pricing */}
+            {/* Step 1: Pricing & Metrics */}
             {currentStep === 1 && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Set your pricing</h2>
@@ -138,31 +186,36 @@ export default function NewListingPage() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Per</label>
                     <select className="w-full px-4 py-3 border rounded-lg bg-background">
-                      <option>Hour</option>
-                      <option>Day</option>
+                      <option>Week</option>
                       <option>Month</option>
+                      <option>Campaign</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <div className="text-sm font-medium mb-2">Estimated earnings</div>
-                  <div className="text-2xl font-bold text-primary">₹25,000 - ₹50,000/month</div>
+                  <div className="text-2xl font-bold text-primary">₹15,000 - ₹35,000/month</div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    Based on similar spaces in your area
+                    Based on similar ad spots in your area
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Amenities (select all that apply)</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {["Wi-Fi", "AC", "Parking", "Kitchen", "Projector", "Sound System"].map((amenity) => (
-                      <label key={amenity} className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" className="rounded" />
-                        <span className="text-sm">{amenity}</span>
-                      </label>
-                    ))}
+                <div className="p-4 rounded-lg bg-background border">
+                  <div className="text-sm font-medium mb-3">Cost Per Impression (CPM)</div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="text-muted-foreground">Your CPM</div>
+                      <div className="text-lg font-semibold">₹2.50</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Market Average</div>
+                      <div className="text-lg font-semibold">₹3.00</div>
+                    </div>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Calculated based on your pricing and monthly impressions
+                  </p>
                 </div>
               </div>
             )}
@@ -171,7 +224,7 @@ export default function NewListingPage() {
             {currentStep === 2 && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Add photos</h2>
-                <p className="text-muted-foreground">Upload at least 3 high-quality photos of your space</p>
+                <p className="text-muted-foreground">Upload at least 3 high-quality photos of your ad spot and venue</p>
                 
                 <div className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary transition-colors cursor-pointer">
                   <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -237,16 +290,20 @@ export default function NewListingPage() {
 
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-background border">
-                    <div className="text-sm text-muted-foreground mb-1">Space Name</div>
-                    <div className="font-medium">Modern Creative Studio</div>
+                    <div className="text-sm text-muted-foreground mb-1">Ad Spot Name</div>
+                    <div className="font-medium">CCD Coffee - Koramangala</div>
                   </div>
                   <div className="p-4 rounded-lg bg-background border">
-                    <div className="text-sm text-muted-foreground mb-1">Type & Location</div>
-                    <div className="font-medium">Studio • Bandra West, Mumbai</div>
+                    <div className="text-sm text-muted-foreground mb-1">Format & Venue</div>
+                    <div className="font-medium">Poster Wall • Café • Koramangala, Bangalore</div>
+                  </div>
+                  <div className="p-4 rounded-lg bg-background border">
+                    <div className="text-sm text-muted-foreground mb-1">Metrics</div>
+                    <div className="font-medium">2,500 daily footfall • 75,000 monthly impressions</div>
                   </div>
                   <div className="p-4 rounded-lg bg-background border">
                     <div className="text-sm text-muted-foreground mb-1">Pricing</div>
-                    <div className="font-medium">₹2,500 per hour</div>
+                    <div className="font-medium">₹12,000 per month</div>
                   </div>
                 </div>
 
@@ -255,10 +312,10 @@ export default function NewListingPage() {
                     <Check className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
                     <div>
                       <div className="font-medium text-green-900 dark:text-green-100 mb-1">
-                        Your listing is ready!
+                        Your ad spot listing is ready!
                       </div>
                       <div className="text-sm text-green-700 dark:text-green-300">
-                        Once submitted, your space will be reviewed and go live within 24 hours.
+                        Once submitted, your ad spot will be reviewed and go live within 24 hours.
                       </div>
                     </div>
                   </div>
@@ -278,7 +335,7 @@ export default function NewListingPage() {
               </Button>
               {currentStep === steps.length - 1 ? (
                 <Button size="lg">
-                  Submit Listing
+                  List Ad Spot
                   <Check className="h-4 w-4 ml-2" />
                 </Button>
               ) : (
