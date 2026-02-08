@@ -106,6 +106,47 @@ npm run dev
 http://localhost:3000
 ```
 
+## 🔐 Environment Variables Setup
+
+This project uses environment variables for sensitive configuration like database credentials and API keys.
+
+### Local Development Setup
+
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Fill in the actual values** in `.env.local`:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string
+   - `NEXTAUTH_URL`: `http://localhost:3000` (for local development)
+   - `NEXTAUTH_SECRET`: Generate with `openssl rand -base64 32`
+   - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: (optional) For Google OAuth
+
+3. **Never commit `.env.local`** - it contains your secrets!
+
+### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MONGODB_URI` | MongoDB Atlas connection string | `mongodb+srv://user:pass@cluster.mongodb.net/advermo` |
+| `NEXTAUTH_URL` | Your app's base URL | `http://localhost:3000` (local) or `https://advermo.vercel.app` (production) |
+| `NEXTAUTH_SECRET` | Secret key for JWT encryption | Generate with `openssl rand -base64 32` |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID (optional) | From Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Secret (optional) | From Google Cloud Console |
+
+### Production Deployment (Vercel)
+
+When deploying to Vercel:
+
+1. Go to your project settings
+2. Navigate to **Environment Variables**
+3. Add all variables from `.env.example` with **actual production values**
+4. **Important:** Use a **different** `NEXTAUTH_SECRET` for production
+5. Update `NEXTAUTH_URL` to your Vercel domain (e.g., `https://advermo.vercel.app`)
+
+See `.env.example` for detailed setup instructions.
+
 ### Build for Production
 
 ```bash
