@@ -1,4 +1,4 @@
-import { spaces } from "@/lib/data";
+import { adSpaces } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,10 @@ import {
   CheckCircle2, 
   Calendar,
   Shield,
-  MessageCircle
+  MessageCircle,
+  Eye,
+  Target,
+  Clock
 } from "lucide-react";
 import { formatPrice, formatPriceUnit } from "@/lib/utils";
 
@@ -19,11 +22,14 @@ export default async function SpaceDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const space = spaces.find((s) => s.id === id);
+  const adSpace = adSpaces.find((s) => s.id === id);
 
-  if (!space) {
+  if (!adSpace) {
     notFound();
   }
+
+  // Calculate CPM
+  const cpm = (adSpace.price / adSpace.monthlyImpressions * 1000).toFixed(2);
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,19 +38,19 @@ export default async function SpaceDetailsPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden">
             <Image
-              src={space.images[0]}
-              alt={space.name}
+              src={adSpace.images[0]}
+              alt={adSpace.name}
               fill
               className="object-cover"
               priority
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {space.images.slice(1, 5).map((image, index) => (
+            {adSpace.images.slice(1, 5).map((image, index) => (
               <div key={index} className="relative h-44 md:h-60 rounded-2xl overflow-hidden">
                 <Image
                   src={image}
-                  alt={`${space.name} - ${index + 2}`}
+                  alt={`${adSpace.name} - ${index + 2}`}
                   fill
                   className="object-cover"
                 />
@@ -60,46 +66,79 @@ export default async function SpaceDetailsPage({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium capitalize">
-                  {space.type}
+                  {adSpace.venueType}
                 </span>
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{space.rating}</span>
-                  <span className="text-muted-foreground">({space.reviewCount} reviews)</span>
+                  <span className="font-semibold">{adSpace.rating}</span>
+                  <span className="text-muted-foreground">({adSpace.reviewCount} reviews)</span>
                 </div>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">{space.name}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">{adSpace.name}</h1>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="h-5 w-5" />
-                <span>{space.location}</span>
+                <span>{adSpace.location}</span>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <h2 className="text-2xl font-semibold mb-3">About this space</h2>
-              <p className="text-muted-foreground leading-relaxed">{space.description}</p>
+              <h2 className="text-2xl font-semibold mb-3">About this ad space</h2>
+              <p className="text-muted-foreground leading-relaxed">{adSpace.description}</p>
             </div>
 
-            {/* Capacity */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
-              <Users className="h-8 w-8 text-primary" />
-              <div>
-                <div className="font-semibold">Capacity</div>
-                <div className="text-muted-foreground">Up to {space.capacity} people</div>
+            {/* Key Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
+                <Users className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="font-semibold">Daily Footfall</div>
+                  <div className="text-muted-foreground">{adSpace.dailyFootfall.toLocaleString()} people/day</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
+                <Eye className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="font-semibold">Monthly Impressions</div>
+                  <div className="text-muted-foreground">{adSpace.monthlyImpressions.toLocaleString()}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
+                <Target className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="font-semibold">Demographics</div>
+                  <div className="text-muted-foreground">{adSpace.demographics}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
+                <Clock className="h-8 w-8 text-primary" />
+                <div>
+                  <div className="font-semibold">Peak Hours</div>
+                  <div className="text-muted-foreground">{adSpace.peakHours}</div>
+                </div>
               </div>
             </div>
 
-            {/* Amenities */}
+            {/* Advertising Details */}
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {space.amenities.map((amenity) => (
-                  <div key={amenity} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>{amenity}</span>
-                  </div>
-                ))}
+              <h2 className="text-2xl font-semibold mb-4">Advertising Details</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-xl bg-card border">
+                <div>
+                  <div className="font-semibold mb-1">Ad Format</div>
+                  <div className="text-muted-foreground">{adSpace.placement}</div>
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Venue Type</div>
+                  <div className="text-muted-foreground">{adSpace.venueType}</div>
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Location</div>
+                  <div className="text-muted-foreground">{adSpace.location}</div>
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">CPM</div>
+                  <div className="text-muted-foreground">₹{cpm}</div>
+                </div>
               </div>
             </div>
 
@@ -124,29 +163,29 @@ export default async function SpaceDetailsPage({
                 <div className="text-center">
                   <MapPin className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
                   <p className="text-muted-foreground">Map view will be displayed here</p>
-                  <p className="text-sm text-muted-foreground mt-1">{space.location}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{adSpace.location}</p>
                 </div>
               </div>
             </div>
 
-            {/* Host Info */}
+            {/* Venue Owner Info */}
             <div className="p-6 rounded-xl bg-card border">
               <div className="flex items-start gap-4">
                 <div className="relative h-16 w-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-xl font-semibold">{space.host.name}</h3>
-                    {space.host.verified && (
+                    <h3 className="text-xl font-semibold">Venue Owner</h3>
+                    {adSpace.verified && (
                       <Shield className="h-5 w-5 text-primary" />
                     )}
                   </div>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span>{space.host.rating} host rating</span>
+                    <span>{adSpace.rating} rating</span>
                   </div>
                   <Button variant="outline">
                     <MessageCircle className="h-4 w-4 mr-2" />
-                    Contact Host
+                    Contact Venue Owner
                   </Button>
                 </div>
               </div>
@@ -156,41 +195,46 @@ export default async function SpaceDetailsPage({
           {/* Booking Card (Sticky) */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 p-6 rounded-2xl bg-card border shadow-lg space-y-4">
+              <h3 className="text-xl font-semibold mb-2">Book this Ad Spot</h3>
               <div className="pb-4 border-b">
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="text-3xl font-bold text-primary">
-                    {formatPrice(space.price)}
+                    {formatPrice(adSpace.price)}
                   </span>
                   <span className="text-muted-foreground">
-                    {formatPriceUnit(space.priceUnit)}
+                    {formatPriceUnit(adSpace.priceUnit)}
                   </span>
                 </div>
+                <div className="text-sm text-primary font-medium mb-1">
+                  CPM: ₹{cpm}
+                </div>
                 <div className="text-sm text-muted-foreground">
-                  {space.availability ? "Available now" : "Currently unavailable"}
+                  {adSpace.monthlyImpressions.toLocaleString()} monthly impressions
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Check-in Date</label>
+                  <label className="text-sm font-medium mb-1 block">Campaign Start Date</label>
                   <input
                     type="date"
                     className="w-full px-3 py-2 border rounded-lg bg-background"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Duration</label>
+                  <label className="text-sm font-medium mb-1 block">Campaign Duration</label>
                   <select className="w-full px-3 py-2 border rounded-lg bg-background">
-                    <option>1 {space.priceUnit}</option>
-                    <option>2 {space.priceUnit}s</option>
-                    <option>3 {space.priceUnit}s</option>
                     <option>1 week</option>
+                    <option>2 weeks</option>
+                    <option>1 month</option>
+                    <option>3 months</option>
+                    <option>6 months</option>
                   </select>
                 </div>
               </div>
 
               <Button className="w-full" size="lg">
-                Request Booking
+                Reserve Ad Spot
               </Button>
 
               <Button className="w-full" variant="outline" size="lg">

@@ -11,11 +11,11 @@ export default function Footer() {
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent" />
               <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                SpaceHub
+                Advermo
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              Discover & book spaces that fit your vision. From workspaces to event halls.
+              Discover & rent ad placements in high-traffic venues. From cafés to malls, reach your audience where they spend time.
             </p>
           </div>
 
@@ -25,12 +25,12 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link href="/spaces" className="hover:text-primary transition-colors">
-                  Explore Spaces
+                  Explore Ad Spaces
                 </Link>
               </li>
               <li>
                 <Link href="/host" className="hover:text-primary transition-colors">
-                  List Your Space
+                  List Your Venue
                 </Link>
               </li>
               <li>
@@ -51,23 +51,23 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Categories</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/spaces?type=workspace" className="hover:text-primary transition-colors">
-                  Workspaces
+                <Link href="/spaces?type=cafe" className="hover:text-primary transition-colors">
+                  Cafés & Coffee Shops
                 </Link>
               </li>
               <li>
-                <Link href="/spaces?type=event" className="hover:text-primary transition-colors">
-                  Event Halls
+                <Link href="/spaces?type=gym" className="hover:text-primary transition-colors">
+                  Gyms & Fitness
                 </Link>
               </li>
               <li>
-                <Link href="/spaces?type=studio" className="hover:text-primary transition-colors">
-                  Studios
+                <Link href="/spaces?type=mall" className="hover:text-primary transition-colors">
+                  Shopping Malls
                 </Link>
               </li>
               <li>
-                <Link href="/spaces?type=stay" className="hover:text-primary transition-colors">
-                  Co-Living
+                <Link href="/spaces?type=college" className="hover:text-primary transition-colors">
+                  Colleges & Campuses
                 </Link>
               </li>
             </ul>
@@ -85,8 +85,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:invest@spacehub.com" className="hover:text-primary transition-colors">
-                  invest@spacehub.com
+                <a href="mailto:invest@advermo.com" className="hover:text-primary transition-colors">
+                  invest@advermo.com
                 </a>
               </li>
             </ul>
@@ -94,7 +94,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} SpaceHub. All rights reserved. Investor MVP Prototype</p>
+          <p>&copy; {new Date().getFullYear()} Advermo. All rights reserved. Investor MVP Prototype</p>
         </div>
       </div>
     </footer>

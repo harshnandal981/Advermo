@@ -17,20 +17,20 @@ export default function Header() {
         <Link href="/" className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent" />
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            SpaceHub
+            Advermo
           </span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           <Link href="/spaces" className="text-sm font-medium hover:text-primary transition-colors">
-            Explore Spaces
+            Explore Ad Spaces
           </Link>
           <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
-            List Your Space
+            List Your Venue
           </Link>
           <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
-            Why Us
+            Why Advermo
           </Link>
         </nav>
 
@@ -71,13 +71,13 @@ export default function Header() {
         <div className="md:hidden border-t bg-background">
           <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
             <Link href="/spaces" className="text-sm font-medium hover:text-primary transition-colors">
-              Explore Spaces
+              Explore Ad Spaces
             </Link>
             <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
-              List Your Space
+              List Your Venue
             </Link>
             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
-              Why Us
+              Why Advermo
             </Link>
             <div className="flex space-x-2 pt-2">
               <Button variant="ghost" size="sm" className="flex-1">

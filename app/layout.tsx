@@ -8,8 +8,8 @@ import Footer from "@/components/layout/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SpaceHub - Discover & Book Spaces That Fit Your Vision",
-  description: "Find and book the perfect workspace, studio, venue, or event hall for your needs.",
+  title: "Advermo - Discover High-Traffic Ad Spaces Instantly",
+  description: "Rent ad placements in premium venues across cities. From cafés to malls, reach your audience where they spend time.",
   icons: {
     icon: "/favicon.svg",
   },

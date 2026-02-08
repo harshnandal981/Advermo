@@ -1,23 +1,29 @@
-export type SpaceType = "workspace" | "event" | "studio" | "stay";
+export type AdSpaceType = 'poster' | 'screen' | 'table-tent' | 'counter' | 'menu' | 'outdoor';
 
-export interface Space {
+export interface AdSpace {
   id: string;
-  name: string;
-  description: string;
-  type: SpaceType;
+  name: string; // e.g., "CCD Coffee - Koramangala"
+  venueType: string; // "Café", "Gym", "Mall", "College", "Transit"
   location: string;
-  city: string;
+  type: AdSpaceType;
+  placement: string; // "Wall Poster", "Digital Screen 43\"", "Table Tent"
+  dailyFootfall: number; // e.g., 2500
+  monthlyImpressions: number; // calculated from footfall
+  demographics: string; // "Young professionals, students"
   price: number;
-  priceUnit: "hour" | "day" | "month";
-  capacity: number;
+  priceUnit: 'week' | 'month' | 'campaign';
+  images: string[];
+  description: string;
+  peakHours: string; // "8 AM - 12 PM, 6 PM - 9 PM"
   rating: number;
   reviewCount: number;
-  images: string[];
-  amenities: string[];
-  host: Host;
-  availability: boolean;
   featured: boolean;
+  verified: boolean;
 }
+
+// Keep Space as alias for backward compatibility during transition
+export type Space = AdSpace;
+export type SpaceType = AdSpaceType;
 
 export interface Host {
   id: string;
@@ -46,12 +52,12 @@ export interface User {
 
 export interface FilterOptions {
   priceRange: [number, number];
-  spaceTypes: SpaceType[];
-  capacity: number;
-  amenities: string[];
+  adSpaceTypes: AdSpaceType[];
+  venueTypes: string[];
+  footfallRange: [number, number];
 }
 
 export interface SortOption {
   label: string;
-  value: "price-low" | "price-high" | "rating" | "popularity";
+  value: "price-low" | "price-high" | "rating" | "popularity" | "footfall" | "cpm";
 }
