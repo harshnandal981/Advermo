@@ -19,7 +19,11 @@
     "react-hook-form": "^7.53.2",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.5",
-    "class-variance-authority": "^0.7.1"
+    "class-variance-authority": "^0.7.1",
+    "next-auth": "^4.24.5",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.3",
+    "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -30,6 +34,7 @@
     "eslint-config-next": "14.2.18",
     "tailwindcss": "^3.4.1",
     "postcss": "^8",
-    "autoprefixer": "^10.0.1"
+    "autoprefixer": "^10.0.1",
+    "@types/bcryptjs": "^2.4.6"
   }
 }

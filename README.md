@@ -78,12 +78,30 @@ cd Advermo
 npm install
 ```
 
-3. **Run development server**
+3. **Set up environment variables**
+
+Create a `.env.local` file in the root directory:
+
+```bash
+cp .env.example .env.local
+```
+
+Update `.env.local` with your MongoDB Atlas credentials:
+
+```env
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here
+```
+
+> **Note**: Generate a secure `NEXTAUTH_SECRET` using: `openssl rand -base64 32`
+
+4. **Run development server**
 ```bash
 npm run dev
 ```
 
-4. **Open your browser**
+5. **Open your browser**
 ```
 http://localhost:3000
 ```
@@ -170,14 +188,103 @@ Our prototype includes realistic data from:
 - **Social Café, Hauz Khas** - Menu inserts for affluent millennials
 - **WeWork BKC, Mumbai** - Counter branding for B2B audience
 
-## 🔐 Authentication (UI Only)
+## 🔐 Authentication
 
-Currently displays UI mockups for:
-- Login/Signup flows
-- Social authentication
-- User roles (Advertiser/Venue Owner)
+**Full authentication system powered by MongoDB Atlas & NextAuth.js**
 
-*Backend integration pending for production*
+### Features
+- ✅ **Email/Password Authentication** - Secure signup and login with bcrypt password hashing
+- ✅ **Google OAuth** - One-click sign-in with Google (optional)
+- ✅ **Role-Based Access** - Brand and Venue Owner roles with different permissions
+- ✅ **Session Management** - JWT-based sessions with 30-day duration
+- ✅ **Protected Routes** - Dashboard access restricted to venue owners
+- ✅ **Auto-Login** - Seamless authentication flow after signup
+
+### User Roles
+
+#### Brand
+- Browse and search ad spaces
+- View space details and pricing
+- Access to all public pages
+
+#### Venue Owner
+- All brand features
+- Access to dashboard (`/host`)
+- List new ad spaces
+- Manage campaigns
+- View earnings and analytics
+
+### MongoDB Setup
+
+1. **Create MongoDB Atlas Account**
+   - Visit [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+   - Create a free cluster
+
+2. **Configure Database**
+   - Create a database named `advermo`
+   - Create a user with read/write permissions
+
+3. **Get Connection String**
+   - Click "Connect" on your cluster
+   - Choose "Connect your application"
+   - Copy the connection string
+   - Update `.env.local` with your credentials
+
+### Environment Variables
+
+Required environment variables in `.env.local`:
+
+```env
+# MongoDB Atlas Connection
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/advermo?retryWrites=true&w=majority
+
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here
+
+# Google OAuth (Optional)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
+
+### Google OAuth Setup (Optional)
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project
+3. Enable Google+ API
+4. Create OAuth 2.0 Client ID
+5. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+6. Copy Client ID and Client Secret to `.env.local`
+
+### Testing Authentication
+
+1. **Sign Up**
+   - Click "Get Started" in the header
+   - Select your role (Brand or Venue Owner)
+   - Enter name, email, and password
+   - Account created and auto-logged in
+
+2. **Sign In**
+   - Click "Sign In" in the header
+   - Enter email and password
+   - Session persists across page reloads
+
+3. **Protected Routes**
+   - Venue owners can access `/host` dashboard
+   - Brands are redirected to home page
+
+4. **Sign Out**
+   - Click on your name in the header
+   - Select "Sign Out"
+
+### Security Features
+
+- 🔒 **Password Hashing** - bcrypt with 12 salt rounds
+- 🔒 **JWT Sessions** - Secure token-based authentication
+- 🔒 **HTTP-Only Cookies** - Protection against XSS attacks
+- 🔒 **CSRF Protection** - Built-in NextAuth.js protection
+- 🔒 **Input Validation** - Email and password validation
+- 🔒 **MongoDB Connection Pooling** - Optimized database connections
 
 ## 🗺️ Roadmap
 
@@ -189,14 +296,17 @@ Currently displays UI mockups for:
 - ✅ Campaign-focused onboarding flow
 - ✅ Light/Dark mode
 - ✅ Responsive design
+- ✅ **MongoDB Atlas + NextAuth.js authentication**
+- ✅ **Role-based access control (Brand/Venue Owner)**
+- ✅ **Protected routes and session management**
 
 ### Phase 2 (Production Preparation)
-- ⏳ Real authentication (Firebase/Auth0)
 - ⏳ Payment integration (Razorpay/Stripe)
 - ⏳ Campaign calendar & booking system
 - ⏳ Review & rating implementation
 - ⏳ Venue verification workflow
 - ⏳ Image upload & management
+- ⏳ Email verification and password reset
 
 ### Phase 3 (Scale & Growth)
 - ⏳ Real-time campaign analytics
