@@ -5,6 +5,8 @@ import SessionProvider from "@/components/providers/session-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
+// Note: Removed Google Fonts (Inter) due to network restrictions in build environment
+// Using system font-sans instead for consistent typography
 export const metadata: Metadata = {
   title: "Advermo - Discover High-Traffic Ad Spaces Instantly",
   description: "Rent ad placements in premium venues across cities. From cafés to malls, reach your audience where they spend time.",

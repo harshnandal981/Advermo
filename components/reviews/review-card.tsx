@@ -14,7 +14,8 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     addSuffix: true,
   });
 
-  const isVerified = review.userRole === 'venue'; // Venue owners are verified
+  // Business rule: venue owners are considered verified users
+  const isVerified = review.userRole === 'venue';
 
   return (
     <div className="p-6 rounded-xl bg-card border space-y-3">

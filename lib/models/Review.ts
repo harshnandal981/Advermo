@@ -6,9 +6,9 @@ export interface IReview {
   userId: string;
   userName: string;
   userRole: 'brand' | 'venue';
-  rating: number; // 1-5
-  comment?: string; // Optional, max 500 characters
-  helpful: number; // Count of helpful votes
+  rating: number;
+  comment?: string;
+  helpful: number; // For future implementation: count of helpful votes
   createdAt: Date;
   updatedAt: Date;
 }
