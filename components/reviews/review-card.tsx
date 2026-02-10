@@ -31,7 +31,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             <div className="flex items-center gap-2">
               <h4 className="font-semibold">{review.userName}</h4>
               {isVerified && (
-                <Shield className="h-4 w-4 text-primary" title="Verified User" />
+                <Shield className="h-4 w-4 text-primary" aria-label="Verified User" />
               )}
             </div>
             <p className="text-sm text-muted-foreground capitalize">

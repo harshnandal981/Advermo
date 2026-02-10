@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Review } from '@/types';
 import ReviewCard from './review-card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ export default function ReviewsList({ spaceId, initialSort = 'newest' }: Reviews
     hasMore: false,
   });
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -39,11 +39,11 @@ export default function ReviewsList({ spaceId, initialSort = 'newest' }: Reviews
     } finally {
       setLoading(false);
     }
-  };
+  }, [spaceId, sort, page]);
 
   useEffect(() => {
     fetchReviews();
-  }, [spaceId, sort, page]);
+  }, [fetchReviews]);
 
   const handleSortChange = (newSort: 'newest' | 'highest') => {
     setSort(newSort);
