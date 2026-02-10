@@ -34,13 +34,31 @@ export interface Host {
   verified: boolean;
 }
 
+export type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'active' | 'completed' | 'cancelled';
+export type PaymentStatus = 'pending' | 'paid' | 'refunded';
+
 export interface Booking {
-  id: string;
+  _id: string;
   spaceId: string;
-  userId: string;
-  date: string;
-  status: "pending" | "confirmed" | "cancelled";
-  amount: number;
+  spaceName: string;
+  brandId: string;
+  brandName: string;
+  brandEmail: string;
+  venueOwnerId: string;
+  venueOwnerEmail: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  duration: number;
+  campaignObjective: string;
+  targetAudience: string;
+  budget?: number;
+  totalPrice: number;
+  status: BookingStatus;
+  paymentStatus: PaymentStatus;
+  notes?: string;
+  rejectionReason?: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface User {
