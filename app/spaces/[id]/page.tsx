@@ -15,6 +15,9 @@ import {
   Clock
 } from "lucide-react";
 import { formatPrice, formatPriceUnit } from "@/lib/utils";
+import ReviewSummary from "@/components/reviews/review-summary";
+import ReviewForm from "@/components/reviews/review-form";
+import ReviewsList from "@/components/reviews/reviews-list";
 
 export default async function SpaceDetailsPage({
   params,
@@ -189,6 +192,13 @@ export default async function SpaceDetailsPage({
                   </Button>
                 </div>
               </div>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="space-y-6">
+              <ReviewSummary spaceId={id} />
+              <ReviewForm spaceId={id} />
+              <ReviewsList spaceId={id} />
             </div>
           </div>
 

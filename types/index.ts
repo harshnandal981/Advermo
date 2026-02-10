@@ -17,6 +17,7 @@ export interface AdSpace {
   peakHours: string; // "8 AM - 12 PM, 6 PM - 9 PM"
   rating: number;
   reviewCount: number;
+  averageRating?: number; // Average rating from reviews
   featured: boolean;
   verified: boolean;
 }
@@ -60,4 +61,29 @@ export interface FilterOptions {
 export interface SortOption {
   label: string;
   value: "price-low" | "price-high" | "rating" | "popularity" | "footfall" | "cpm";
+}
+
+export interface Review {
+  _id: string;
+  spaceId: string;
+  userId: string;
+  userName: string;
+  userRole: 'brand' | 'venue';
+  rating: number; // 1-5
+  comment?: string;
+  helpful: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: {
+    5: number;
+    4: number;
+    3: number;
+    2: number;
+    1: number;
+  };
 }

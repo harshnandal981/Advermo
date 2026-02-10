@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import SessionProvider from "@/components/providers/session-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
-const inter = Inter({ subsets: ["latin"] });
-
+// Note: Removed Google Fonts (Inter) due to network restrictions in build environment
+// Using system font-sans instead for consistent typography
 export const metadata: Metadata = {
   title: "Advermo - Discover High-Traffic Ad Spaces Instantly",
   description: "Rent ad placements in premium venues across cities. From cafés to malls, reach your audience where they spend time.",
@@ -23,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <SessionProvider>
           <ThemeProvider>
             <div className="flex flex-col min-h-screen">
