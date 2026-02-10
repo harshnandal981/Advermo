@@ -43,6 +43,7 @@ export default function HostBookingsPage() {
         fetchStats();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, activeTab]);
 
   const fetchBookings = async () => {

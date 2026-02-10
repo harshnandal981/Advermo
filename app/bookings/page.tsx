@@ -28,6 +28,7 @@ export default function MyBookingsPage() {
     } else if (status === 'authenticated') {
       fetchBookings();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, activeTab]);
 
   const fetchBookings = async () => {
