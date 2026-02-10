@@ -160,10 +160,11 @@ export default function BookingCard({ booking, userRole, onUpdate }: BookingCard
                     Accept
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant="outline"
                     size="sm"
                     onClick={() => handleAction('reject')}
                     disabled={loading}
+                    className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
                   >
                     <XCircle className="h-4 w-4 mr-2" />
                     Reject
@@ -215,9 +216,9 @@ export default function BookingCard({ booking, userRole, onUpdate }: BookingCard
                 Cancel
               </Button>
               <Button
-                variant="destructive"
                 onClick={() => handleAction('reject')}
                 disabled={!rejectionReason || loading}
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Confirm Rejection
               </Button>

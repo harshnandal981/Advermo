@@ -20,7 +20,7 @@ export default async function BookingDetailsPage({
 
   await connectDB();
 
-  const booking = await Booking.findById(id).lean();
+  const booking = await Booking.findById(id).lean() as any;
 
   if (!booking) {
     notFound();

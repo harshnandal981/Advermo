@@ -23,7 +23,7 @@ export async function GET(
 
     await connectDB();
 
-    const booking = await Booking.findById(id).lean();
+    const booking = await Booking.findById(id).lean() as any;
 
     if (!booking) {
       return NextResponse.json(

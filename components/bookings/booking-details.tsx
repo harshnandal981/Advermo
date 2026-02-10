@@ -274,10 +274,10 @@ export default function BookingDetails({ booking, userRole }: BookingDetailsProp
                 Accept Booking
               </Button>
               <Button
-                variant="destructive"
+                variant="outline"
                 onClick={() => handleAction('reject')}
                 disabled={loading}
-                className="flex-1"
+                className="flex-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
               >
                 <XCircle className="h-4 w-4 mr-2" />
                 Reject Booking
@@ -288,10 +288,10 @@ export default function BookingDetails({ booking, userRole }: BookingDetailsProp
           {/* Brand Actions */}
           {userRole === 'brand' && ['pending', 'confirmed'].includes(booking.status) && (
             <Button
-              variant="destructive"
+              variant="outline"
               onClick={() => handleAction('cancel')}
               disabled={loading}
-              className="flex-1"
+              className="flex-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
             >
               <Ban className="h-4 w-4 mr-2" />
               Cancel Booking
@@ -327,9 +327,9 @@ export default function BookingDetails({ booking, userRole }: BookingDetailsProp
                 Cancel
               </Button>
               <Button
-                variant="destructive"
                 onClick={() => handleAction('reject')}
                 disabled={!rejectionReason || loading}
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Confirm Rejection
               </Button>
