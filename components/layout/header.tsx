@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Moon, Sun, Menu, User, LogOut, LayoutDashboard } from "lucide-react";
+import { Moon, Sun, Menu, User, LogOut, LayoutDashboard, Calendar } from "lucide-react";
 import { useTheme } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -48,10 +48,20 @@ export default function Header() {
             <Link href="/spaces" className="text-sm font-medium hover:text-primary transition-colors">
               Explore Ad Spaces
             </Link>
-            {session?.user.role === 'venue' && (
-              <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
-                My Dashboard
+            {session?.user.role === 'brand' && (
+              <Link href="/bookings" className="text-sm font-medium hover:text-primary transition-colors">
+                My Bookings
               </Link>
+            )}
+            {session?.user.role === 'venue' && (
+              <>
+                <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
+                  My Dashboard
+                </Link>
+                <Link href="/host/bookings" className="text-sm font-medium hover:text-primary transition-colors">
+                  Manage Bookings
+                </Link>
+              </>
             )}
             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
               Why Advermo
@@ -92,15 +102,35 @@ export default function Header() {
                         <p className="text-xs text-muted-foreground">{session.user.email}</p>
                         <p className="text-xs text-primary mt-1 capitalize">{session.user.role}</p>
                       </div>
-                      {session.user.role === 'venue' && (
+                      {session.user.role === 'brand' && (
                         <Link
-                          href="/host"
+                          href="/bookings"
                           className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-accent transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          <LayoutDashboard className="h-4 w-4" />
-                          <span>My Dashboard</span>
+                          <Calendar className="h-4 w-4" />
+                          <span>My Bookings</span>
                         </Link>
+                      )}
+                      {session.user.role === 'venue' && (
+                        <>
+                          <Link
+                            href="/host"
+                            className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-accent transition-colors"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            <span>My Dashboard</span>
+                          </Link>
+                          <Link
+                            href="/host/bookings"
+                            className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-accent transition-colors"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <Calendar className="h-4 w-4" />
+                            <span>Manage Bookings</span>
+                          </Link>
+                        </>
                       )}
                       <button
                         onClick={handleSignOut}
@@ -140,10 +170,20 @@ export default function Header() {
               <Link href="/spaces" className="text-sm font-medium hover:text-primary transition-colors">
                 Explore Ad Spaces
               </Link>
-              {session?.user.role === 'venue' && (
-                <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
-                  My Dashboard
+              {session?.user.role === 'brand' && (
+                <Link href="/bookings" className="text-sm font-medium hover:text-primary transition-colors">
+                  My Bookings
                 </Link>
+              )}
+              {session?.user.role === 'venue' && (
+                <>
+                  <Link href="/host" className="text-sm font-medium hover:text-primary transition-colors">
+                    My Dashboard
+                  </Link>
+                  <Link href="/host/bookings" className="text-sm font-medium hover:text-primary transition-colors">
+                    Manage Bookings
+                  </Link>
+                </>
               )}
               <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
                 Why Advermo
