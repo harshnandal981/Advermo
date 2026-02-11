@@ -131,7 +131,7 @@ export async function GET(req: NextRequest) {
     const totalCount = await Favorite.countDocuments({ userId: session.user.id });
 
     // Populate space data from adSpaces
-    let favoritesWithSpaces = favorites.map((fav) => {
+    let favoritesWithSpaces = favorites.map((fav: any) => {
       const space = adSpaces.find((s) => s.id === fav.spaceId);
       return {
         _id: fav._id.toString(),

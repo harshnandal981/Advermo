@@ -33,7 +33,7 @@ export default function FavoriteCard({
     onRemove?.(space.id);
   };
 
-  const handleSelect = (e: React.MouseEvent) => {
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onSelect?.(space.id);

@@ -35,6 +35,7 @@ export default function FavoriteButton({
     } else {
       setIsChecking(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, spaceId]);
 
   const checkFavoriteStatus = async () => {

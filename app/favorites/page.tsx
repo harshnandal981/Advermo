@@ -31,6 +31,7 @@ export default function FavoritesPage() {
       fetchFavorites();
       fetchStats();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, sortBy]);
 
   const fetchFavorites = async () => {
