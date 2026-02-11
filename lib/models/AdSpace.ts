@@ -1,5 +1,16 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
+export interface IAdSpaceImage {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+  uploadedAt: Date;
+  isPrimary: boolean;
+  order: number;
+}
+
 export interface IAdSpace {
   name: string;
   venueType: string;
@@ -19,7 +30,8 @@ export interface IAdSpace {
   demographics: string;
   price: number;
   priceUnit: 'week' | 'month' | 'campaign';
-  images: string[];
+  images: string[]; // Legacy support
+  imageDetails?: IAdSpaceImage[]; // New structured image data
   description: string;
   peakHours: string;
   rating: number;
@@ -116,6 +128,40 @@ const adSpaceSchema = new Schema<IAdSpace>(
       type: [String],
       default: [],
     },
+    imageDetails: [{
+      url: {
+        type: String,
+        required: true,
+      },
+      publicId: {
+        type: String,
+        required: true,
+      },
+      width: {
+        type: Number,
+        required: true,
+      },
+      height: {
+        type: Number,
+        required: true,
+      },
+      format: {
+        type: String,
+        required: true,
+      },
+      uploadedAt: {
+        type: Date,
+        default: Date.now,
+      },
+      isPrimary: {
+        type: Boolean,
+        default: false,
+      },
+      order: {
+        type: Number,
+        default: 0,
+      },
+    }],
     description: {
       type: String,
       required: [true, 'Description is required'],

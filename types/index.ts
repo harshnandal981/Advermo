@@ -337,28 +337,39 @@ export interface AnalyticsFilters {
 export type ExportFormat = 'csv' | 'pdf';
 export type ExportType = 'revenue' | 'bookings' | 'all';
 
-// Favorites/Wishlist types
-export interface Favorite {
-  _id: string;
-  userId: string;
-  spaceId: string;
-  space?: AdSpace; // Populated
-  addedAt: Date;
-  notes?: string;
+// Image Upload Types
+export interface ImageData {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+  uploadedAt: Date;
+  isPrimary?: boolean;
+  order?: number;
 }
 
-export interface FavoritesStats {
-  totalCount: number;
-  totalValue: number;
-  topVenueType: string;
-  averagePrice: number;
+export interface UploadProgress {
+  fileName: string;
+  progress: number;
+  status: 'uploading' | 'success' | 'error';
+  error?: string;
 }
 
-export interface CompareSpace {
-  space: AdSpace;
-  metrics: {
-    pricePerImpression: number;
-    valueScore: number;
-  };
+export interface CloudinaryUploadResult {
+  public_id: string;
+  secure_url: string;
+  url: string;
+  width: number;
+  height: number;
+  format: string;
+  bytes: number;
+  created_at: string;
 }
 
+export interface UploadOptions {
+  folder: 'spaces' | 'profiles' | 'proofs' | 'reviews';
+  maxSize?: number;
+  maxFiles?: number;
+  allowedTypes?: string[];
+}
