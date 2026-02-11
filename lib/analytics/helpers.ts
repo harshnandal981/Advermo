@@ -201,9 +201,11 @@ export function getTopPerformingSpaces(
 
   // Convert to array and calculate occupancy rate
   const spacesArray = Array.from(spaceMetrics.values()).map(metric => {
-    // Simplified occupancy calculation (can be enhanced based on actual availability)
-    const avgBookingDuration = metric.totalDays / (metric.bookingCount || 1);
-    const occupancyRate = Math.min((metric.totalDays / 365) * 100, 100); // Rough estimate
+    // Simplified occupancy calculation - calculates based on a full year (365 days)
+    // Note: This is a rough estimate and assumes uniform availability throughout the year
+    // For more accurate results, implement actual availability tracking per space
+    // and calculate occupancy as: (booked_days / available_days) * 100
+    const occupancyRate = Math.min((metric.totalDays / 365) * 100, 100);
 
     return {
       space: metric.space,

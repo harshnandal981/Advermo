@@ -26,14 +26,16 @@ export default function StatsCard({
   loading = false,
   tooltip,
 }: StatsCardProps) {
-  // Format the value
-  const formattedValue = loading ? '...' : typeof value === 'number'
-    ? isCurrency
-      ? formatCurrency(value)
-      : isPercentage
-      ? `${value.toFixed(1)}%`
-      : formatNumber(value)
-    : value;
+  // Format the value helper function
+  const getFormattedValue = (): string | number => {
+    if (loading) return '...';
+    if (typeof value !== 'number') return value;
+    if (isCurrency) return formatCurrency(value);
+    if (isPercentage) return `${value.toFixed(1)}%`;
+    return formatNumber(value);
+  };
+
+  const formattedValue = getFormattedValue();
 
   // Determine trend color
   const trendColor = trend === 'up' 

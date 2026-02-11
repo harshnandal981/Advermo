@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -37,20 +37,7 @@ export default function BrandAnalyticsPage() {
     endDate: new Date(),
   });
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/');
-    } else if (status === 'authenticated') {
-      if (session?.user?.role !== 'brand') {
-        router.push('/');
-      } else {
-        fetchAnalytics();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, dateRange]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -71,7 +58,19 @@ export default function BrandAnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange]);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/');
+    } else if (status === 'authenticated') {
+      if (session?.user?.role !== 'brand') {
+        router.push('/');
+      } else {
+        fetchAnalytics();
+      }
+    }
+  }, [status, session, router, fetchAnalytics]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
