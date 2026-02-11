@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Review from '@/lib/models/Review';
+import Activity from '@/lib/models/Activity';
+import { anonymizeName } from '@/lib/social-proof/helpers';
+import { adSpaces } from '@/lib/data';
 
 // GET /api/reviews - Get reviews for a specific space
 export async function GET(req: NextRequest) {
@@ -121,6 +124,33 @@ export async function POST(req: NextRequest) {
       rating,
       comment: comment || undefined,
     });
+
+    // Log activity for social proof
+    try {
+      const space = adSpaces.find((s) => s.id === spaceId);
+      if (space) {
+        // Extract city from location (handle various formats)
+        let city = '';
+        if (space.location) {
+          const locationParts = space.location.split(',');
+          city = locationParts[0]?.trim() || '';
+        }
+        
+        await Activity.create({
+          type: 'review_posted',
+          userId: session.user.id,
+          userName: anonymizeName(session.user.name || 'User'),
+          resourceId: review._id,
+          resourceName: space.name,
+          timestamp: new Date(),
+          isPublic: true,
+          city,
+        });
+      }
+    } catch (activityError) {
+      // Log error but don't fail the review
+      console.error('Error logging activity:', activityError);
+    }
 
     return NextResponse.json(
       { review, message: 'Review submitted successfully' },

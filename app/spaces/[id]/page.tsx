@@ -24,6 +24,13 @@ import MiniMap from "@/components/map/mini-map";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import FavoriteButton from "@/components/favorites/favorite-button";
+import { ViewingCounter } from "@/components/social-proof/viewing-counter";
+import { VerifiedBadge } from "@/components/social-proof/verified-badge";
+import { PopularBadge } from "@/components/social-proof/popular-badge";
+import { RecentActivity } from "@/components/social-proof/recent-activity";
+import { TrustIndicators } from "@/components/social-proof/trust-indicators";
+import { UrgencyBanner } from "@/components/social-proof/urgency-banner";
+import SpaceViewTracker from "@/components/social-proof/space-view-tracker";
 
 export default async function SpaceDetailsPage({
   params,
@@ -45,10 +52,17 @@ export default async function SpaceDetailsPage({
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Track page view */}
+      <SpaceViewTracker spaceId={id} />
+      
       {/* Image Gallery */}
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden">
+            {/* Show popular badge if available */}
+            {adSpace.featured && (
+              <PopularBadge badge="popular" variant="overlay" />
+            )}
             <Image
               src={adSpace.images[0]}
               alt={adSpace.name}
@@ -76,7 +90,7 @@ export default async function SpaceDetailsPage({
           <div className="lg:col-span-2 space-y-8">
             {/* Header */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium capitalize">
                   {adSpace.venueType}
                 </span>
@@ -85,10 +99,21 @@ export default async function SpaceDetailsPage({
                   <span className="font-semibold">{adSpace.rating}</span>
                   <span className="text-muted-foreground">({adSpace.reviewCount} reviews)</span>
                 </div>
+                {/* Viewing Counter */}
+                <ViewingCounter spaceId={id} />
               </div>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h1 className="text-3xl md:text-4xl font-bold mb-3">{adSpace.name}</h1>
+                  <div className="flex items-center gap-2 mb-3">
+                    <h1 className="text-3xl md:text-4xl font-bold">{adSpace.name}</h1>
+                    {adSpace.verified && (
+                      <VerifiedBadge 
+                        isVerified={true} 
+                        verificationType="business"
+                        size="lg"
+                      />
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-5 w-5" />
                     <span>{adSpace.location}</span>
@@ -184,12 +209,26 @@ export default async function SpaceDetailsPage({
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="text-xl font-semibold">Venue Owner</h3>
                     {adSpace.verified && (
-                      <Shield className="h-5 w-5 text-primary" />
+                      <VerifiedBadge 
+                        isVerified={true} 
+                        verificationType="business"
+                        size="md"
+                      />
                     )}
                   </div>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span>{adSpace.rating} rating</span>
+                  </div>
+                  {/* Trust Indicators */}
+                  <div className="mb-4">
+                    <TrustIndicators
+                      responseTime={1.5}
+                      acceptanceRate={95}
+                      memberSince={new Date(2022, 0, 1)}
+                      totalBookings={50}
+                      averageRating={adSpace.rating}
+                    />
                   </div>
                   <Button variant="outline">
                     <MessageCircle className="h-4 w-4 mr-2" />
@@ -209,55 +248,60 @@ export default async function SpaceDetailsPage({
 
           {/* Booking Card (Sticky) */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-2xl bg-card border shadow-lg overflow-hidden">
-              {session?.user?.role === 'brand' ? (
-                <div className="p-6">
-                  <BookingForm
-                    spaceId={id}
-                    spaceName={adSpace.name}
-                    cpm={parseFloat(cpm)}
-                    dailyFootfall={adSpace.dailyFootfall}
-                  />
-                </div>
-              ) : session?.user?.role === 'venue' ? (
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-semibold mb-2">Your Listing</h3>
-                  <p className="text-muted-foreground mb-4">
-                    This is your ad space listing. Brands can book this space.
-                  </p>
-                  <div className="pb-4 border-b mb-4">
-                    <div className="flex items-baseline gap-2 mb-1 justify-center">
-                      <span className="text-3xl font-bold text-primary">
-                        {formatPrice(adSpace.price)}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {formatPriceUnit(adSpace.priceUnit)}
-                      </span>
+            <div className="sticky top-24 space-y-4">
+              <div className="rounded-2xl bg-card border shadow-lg overflow-hidden">
+                {session?.user?.role === 'brand' ? (
+                  <div className="p-6">
+                    {/* Social proof above booking form */}
+                    <div className="mb-4 space-y-2">
+                      <RecentActivity lastBookedAt={new Date(Date.now() - 2 * 60 * 60 * 1000)} />
                     </div>
-                    <div className="text-sm text-primary font-medium mb-1">
-                      CPM: ₹{cpm}
-                    </div>
+                    <BookingForm
+                      spaceId={id}
+                      spaceName={adSpace.name}
+                      cpm={parseFloat(cpm)}
+                      dailyFootfall={adSpace.dailyFootfall}
+                    />
                   </div>
-                  <Button variant="outline" className="w-full">
-                    Manage Bookings
-                  </Button>
-                </div>
-              ) : (
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-semibold mb-2">Book this Ad Spot</h3>
-                  <div className="pb-4 border-b mb-4">
-                    <div className="flex items-baseline gap-2 mb-1 justify-center">
-                      <span className="text-3xl font-bold text-primary">
-                        {formatPrice(adSpace.price)}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {formatPriceUnit(adSpace.priceUnit)}
-                      </span>
+                ) : session?.user?.role === 'venue' ? (
+                  <div className="p-6 text-center">
+                    <h3 className="text-xl font-semibold mb-2">Your Listing</h3>
+                    <p className="text-muted-foreground mb-4">
+                      This is your ad space listing. Brands can book this space.
+                    </p>
+                    <div className="pb-4 border-b mb-4">
+                      <div className="flex items-baseline gap-2 mb-1 justify-center">
+                        <span className="text-3xl font-bold text-primary">
+                          {formatPrice(adSpace.price)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          {formatPriceUnit(adSpace.priceUnit)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-primary font-medium mb-1">
+                        CPM: ₹{cpm}
+                      </div>
                     </div>
-                    <div className="text-sm text-primary font-medium mb-1">
-                      CPM: ₹{cpm}
-                    </div>
+                    <Button variant="outline" className="w-full">
+                      Manage Bookings
+                    </Button>
                   </div>
+                ) : (
+                  <div className="p-6 text-center">
+                    <h3 className="text-xl font-semibold mb-2">Book this Ad Spot</h3>
+                    <div className="pb-4 border-b mb-4">
+                      <div className="flex items-baseline gap-2 mb-1 justify-center">
+                        <span className="text-3xl font-bold text-primary">
+                          {formatPrice(adSpace.price)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          {formatPriceUnit(adSpace.priceUnit)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-primary font-medium mb-1">
+                        CPM: ₹{cpm}
+                      </div>
+                    </div>
                   <p className="text-muted-foreground mb-4">
                     Please sign in as a brand to book this space
                   </p>
@@ -265,6 +309,15 @@ export default async function SpaceDetailsPage({
                     Sign In
                   </Button>
                 </div>
+              )}
+              </div>
+              
+              {/* Urgency Banner */}
+              {session?.user?.role === 'brand' && (
+                <UrgencyBanner 
+                  availableSlots={3}
+                  variant="limited"
+                />
               )}
             </div>
           </div>

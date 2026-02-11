@@ -3,11 +3,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Booking from '@/lib/models/Booking';
+import Activity from '@/lib/models/Activity';
 import { adSpaces } from '@/lib/data';
 import { sendEmail } from '@/lib/email/service';
 import { shouldSendEmail } from '@/lib/email/helpers';
 import BookingCreatedEmail from '@/emails/booking-created';
 import BookingReceivedEmail from '@/emails/booking-received';
+import { anonymizeName } from '@/lib/social-proof/helpers';
 
 // Helper function to check date conflicts
 async function checkDateConflict(
@@ -226,6 +228,30 @@ export async function POST(req: NextRequest) {
     } catch (emailError) {
       // Log email error but don't fail the booking creation
       console.error('Error sending booking emails:', emailError);
+    }
+
+    // Log activity for social proof
+    try {
+      // Extract city from location (handle various formats)
+      let city = '';
+      if (space.location) {
+        const locationParts = space.location.split(',');
+        city = locationParts[0]?.trim() || '';
+      }
+      
+      await Activity.create({
+        type: 'booking_created',
+        userId: session.user.id,
+        userName: anonymizeName(session.user.name || 'User'),
+        resourceId: booking._id,
+        resourceName: space.name,
+        timestamp: new Date(),
+        isPublic: true,
+        city,
+      });
+    } catch (activityError) {
+      // Log error but don't fail the booking
+      console.error('Error logging activity:', activityError);
     }
 
     return NextResponse.json(
