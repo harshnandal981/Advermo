@@ -55,6 +55,9 @@ export interface Booking {
   totalPrice: number;
   status: BookingStatus;
   paymentStatus: PaymentStatus;
+  paymentId?: string;
+  isPaid: boolean;
+  paidAt?: Date | string;
   notes?: string;
   rejectionReason?: string;
   createdAt: Date | string;
@@ -104,4 +107,64 @@ export interface ReviewStats {
     2: number;
     1: number;
   };
+}
+
+// Payment Types
+export type PaymentStatusType = 'created' | 'pending' | 'success' | 'failed' | 'refunded';
+
+export interface Payment {
+  _id: string;
+  bookingId: string;
+  brandId: string;
+  amount: number;
+  currency: string;
+  razorpayOrderId: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+  status: PaymentStatusType;
+  method?: string;
+  receipt: string;
+  notes?: Record<string, any>;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  completedAt?: Date | string;
+}
+
+export interface RazorpayResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+// Extend global Window interface for Razorpay
+interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
 }

@@ -18,6 +18,9 @@ export interface IBooking {
   totalPrice: number;
   status: 'pending' | 'confirmed' | 'rejected' | 'active' | 'completed' | 'cancelled';
   paymentStatus: 'pending' | 'paid' | 'refunded';
+  paymentId?: mongoose.Types.ObjectId;
+  isPaid: boolean;
+  paidAt?: Date;
   notes?: string;
   rejectionReason?: string;
   createdAt: Date;
@@ -110,6 +113,18 @@ const BookingSchema = new Schema<IBooking>(
       type: String,
       enum: ['pending', 'paid', 'refunded'],
       default: 'pending',
+    },
+    paymentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Payment',
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    paidAt: {
+      type: Date,
     },
     notes: {
       type: String,
