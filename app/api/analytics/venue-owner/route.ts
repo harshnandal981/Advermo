@@ -57,14 +57,15 @@ export async function GET(req: NextRequest) {
       bookingQuery.spaceId = spaceIdFilter;
     }
 
-    const allBookings = await Booking.find(bookingQuery).lean();
+    const allBookingsRaw = await Booking.find(bookingQuery).lean();
+    const allBookings = allBookingsRaw as any[];
     
     // Filter by date range
     const bookings = filterBookingsByDateRange(allBookings, startDate, endDate);
 
     // Fetch venue owner's spaces
-    const spaces = await AdSpace.find({ ownerId: session.user.id }).lean();
-    const spacesFormatted = spaces.map(space => ({
+    const spacesRaw = await AdSpace.find({ ownerId: session.user.id }).lean();
+    const spacesFormatted = (spacesRaw as any[]).map(space => ({
       id: space._id.toString(),
       name: space.name,
       venueType: space.venueType,

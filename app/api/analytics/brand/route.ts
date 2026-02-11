@@ -43,7 +43,8 @@ export async function GET(req: NextRequest) {
     const startDate = startDateParam ? parseISO(startDateParam) : subMonths(endDate, 3);
 
     // Fetch all bookings for this brand
-    const allBookings = await Booking.find({ brandId: session.user.id }).lean();
+    const allBookingsRaw = await Booking.find({ brandId: session.user.id }).lean();
+    const allBookings = allBookingsRaw as any[];
     
     // Filter by date range
     const bookings = filterBookingsByDateRange(allBookings, startDate, endDate);
@@ -77,8 +78,9 @@ export async function GET(req: NextRequest) {
     const venueTypeSpending = new Map<string, number>();
     
     for (const booking of paidBookings) {
-      const space = await AdSpace.findById(booking.spaceId).lean();
-      if (space) {
+      const spaceDoc = await AdSpace.findById(booking.spaceId).lean();
+      if (spaceDoc) {
+        const space = spaceDoc as any;
         const venueType = space.venueType;
         const current = venueTypeSpending.get(venueType) || 0;
         venueTypeSpending.set(venueType, current + booking.totalPrice);
@@ -101,8 +103,9 @@ export async function GET(req: NextRequest) {
     for (const booking of bookings) {
       if (booking.status === 'cancelled' || booking.status === 'rejected') continue;
 
-      const space = await AdSpace.findById(booking.spaceId).lean();
-      if (space) {
+      const spaceDoc = await AdSpace.findById(booking.spaceId).lean();
+      if (spaceDoc) {
+        const space = spaceDoc as any;
         // Calculate impressions: (monthlyImpressions / 30) * duration
         const dailyImpressions = space.monthlyImpressions / 30;
         const bookingImpressions = dailyImpressions * booking.duration;

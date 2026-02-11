@@ -37,7 +37,8 @@ export async function GET(req: NextRequest) {
       : { brandId: session.user.id };
 
     // Fetch bookings
-    const allBookings = await Booking.find(bookingQuery).lean();
+    const allBookingsRaw = await Booking.find(bookingQuery).lean();
+    const allBookings = allBookingsRaw as any[];
 
     // This month metrics
     const thisMonthStart = startOfMonth(new Date());
@@ -57,7 +58,8 @@ export async function GET(req: NextRequest) {
 
     // Calculate stats for venue owners
     if (isVenue) {
-      const spaces = await AdSpace.find({ ownerId: session.user.id }).lean();
+      const spacesRaw = await AdSpace.find({ ownerId: session.user.id }).lean();
+      const spaces = spacesRaw as any[];
 
       const thisMonthRevenue = thisMonthBookings
         .filter(b => b.isPaid)
