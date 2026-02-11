@@ -18,6 +18,10 @@ import { formatPrice, formatPriceUnit } from "@/lib/utils";
 import ReviewSummary from "@/components/reviews/review-summary";
 import ReviewForm from "@/components/reviews/review-form";
 import ReviewsList from "@/components/reviews/reviews-list";
+import BookingForm from "@/components/bookings/booking-form";
+import BookingsCalendar from "@/components/bookings/bookings-calendar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function SpaceDetailsPage({
   params,
@@ -30,6 +34,9 @@ export default async function SpaceDetailsPage({
   if (!adSpace) {
     notFound();
   }
+
+  // Get session to check user role
+  const session = await getServerSession(authOptions);
 
   // Calculate CPM
   const cpm = (adSpace.price / adSpace.monthlyImpressions * 1000).toFixed(2);
@@ -145,18 +152,10 @@ export default async function SpaceDetailsPage({
               </div>
             </div>
 
-            {/* Availability Calendar (UI Mock) */}
+            {/* Availability Calendar */}
             <div>
               <h2 className="text-2xl font-semibold mb-4">Availability</h2>
-              <div className="p-8 rounded-xl bg-card border text-center">
-                <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  Calendar view will be displayed here
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Select your preferred dates and times
-                </p>
-              </div>
+              <BookingsCalendar spaceId={id} />
             </div>
 
             {/* Map (Mock) */}
@@ -204,56 +203,63 @@ export default async function SpaceDetailsPage({
 
           {/* Booking Card (Sticky) */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 p-6 rounded-2xl bg-card border shadow-lg space-y-4">
-              <h3 className="text-xl font-semibold mb-2">Book this Ad Spot</h3>
-              <div className="pb-4 border-b">
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-3xl font-bold text-primary">
-                    {formatPrice(adSpace.price)}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {formatPriceUnit(adSpace.priceUnit)}
-                  </span>
-                </div>
-                <div className="text-sm text-primary font-medium mb-1">
-                  CPM: ₹{cpm}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {adSpace.monthlyImpressions.toLocaleString()} monthly impressions
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Campaign Start Date</label>
-                  <input
-                    type="date"
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
+            <div className="sticky top-24 rounded-2xl bg-card border shadow-lg overflow-hidden">
+              {session?.user?.role === 'brand' ? (
+                <div className="p-6">
+                  <BookingForm
+                    spaceId={id}
+                    spaceName={adSpace.name}
+                    cpm={parseFloat(cpm)}
+                    dailyFootfall={adSpace.dailyFootfall}
                   />
                 </div>
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Campaign Duration</label>
-                  <select className="w-full px-3 py-2 border rounded-lg bg-background">
-                    <option>1 week</option>
-                    <option>2 weeks</option>
-                    <option>1 month</option>
-                    <option>3 months</option>
-                    <option>6 months</option>
-                  </select>
+              ) : session?.user?.role === 'venue' ? (
+                <div className="p-6 text-center">
+                  <h3 className="text-xl font-semibold mb-2">Your Listing</h3>
+                  <p className="text-muted-foreground mb-4">
+                    This is your ad space listing. Brands can book this space.
+                  </p>
+                  <div className="pb-4 border-b mb-4">
+                    <div className="flex items-baseline gap-2 mb-1 justify-center">
+                      <span className="text-3xl font-bold text-primary">
+                        {formatPrice(adSpace.price)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {formatPriceUnit(adSpace.priceUnit)}
+                      </span>
+                    </div>
+                    <div className="text-sm text-primary font-medium mb-1">
+                      CPM: ₹{cpm}
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full">
+                    Manage Bookings
+                  </Button>
                 </div>
-              </div>
-
-              <Button className="w-full" size="lg">
-                Reserve Ad Spot
-              </Button>
-
-              <Button className="w-full" variant="outline" size="lg">
-                Save for Later
-              </Button>
-
-              <div className="pt-4 border-t text-center text-sm text-muted-foreground">
-                You won&apos;t be charged yet
-              </div>
+              ) : (
+                <div className="p-6 text-center">
+                  <h3 className="text-xl font-semibold mb-2">Book this Ad Spot</h3>
+                  <div className="pb-4 border-b mb-4">
+                    <div className="flex items-baseline gap-2 mb-1 justify-center">
+                      <span className="text-3xl font-bold text-primary">
+                        {formatPrice(adSpace.price)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {formatPriceUnit(adSpace.priceUnit)}
+                      </span>
+                    </div>
+                    <div className="text-sm text-primary font-medium mb-1">
+                      CPM: ₹{cpm}
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground mb-4">
+                    Please sign in as a brand to book this space
+                  </p>
+                  <Button className="w-full">
+                    Sign In
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
