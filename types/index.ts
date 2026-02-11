@@ -105,3 +105,41 @@ export interface ReviewStats {
     1: number;
   };
 }
+
+// Email-related types
+export type EmailTemplate = 
+  | 'welcome'
+  | 'booking_created'
+  | 'booking_received'
+  | 'booking_confirmed'
+  | 'booking_rejected'
+  | 'payment_success'
+  | 'payment_failed'
+  | 'refund_processed'
+  | 'campaign_starting_soon'
+  | 'campaign_started'
+  | 'campaign_completed'
+  | 'booking_cancelled'
+  | 'password_reset'
+  | 'email_verification';
+
+export interface EmailLog {
+  _id: string;
+  recipient: string;
+  subject: string;
+  template: EmailTemplate;
+  status: 'sent' | 'failed' | 'bounced' | 'delivered' | 'opened';
+  resendId?: string;
+  metadata: Record<string, any>;
+  error?: string;
+  sentAt: Date;
+  deliveredAt?: Date;
+  openedAt?: Date;
+}
+
+export interface EmailPreferences {
+  bookingUpdates: boolean;
+  paymentReceipts: boolean;
+  campaignReminders: boolean;
+  marketing: boolean;
+}

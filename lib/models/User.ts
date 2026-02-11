@@ -8,6 +8,12 @@ export interface IUser {
   role: 'brand' | 'venue';
   image?: string;
   emailVerified?: Date;
+  emailPreferences?: {
+    bookingUpdates: boolean;
+    paymentReceipts: boolean;
+    campaignReminders: boolean;
+    marketing: boolean;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +48,20 @@ const UserSchema = new Schema<IUser>(
     },
     emailVerified: {
       type: Date,
+    },
+    emailPreferences: {
+      type: {
+        bookingUpdates: { type: Boolean, default: true },
+        paymentReceipts: { type: Boolean, default: true },
+        campaignReminders: { type: Boolean, default: true },
+        marketing: { type: Boolean, default: false },
+      },
+      default: () => ({
+        bookingUpdates: true,
+        paymentReceipts: true,
+        campaignReminders: true,
+        marketing: false,
+      }),
     },
   },
   {
