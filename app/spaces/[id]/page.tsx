@@ -23,6 +23,7 @@ import BookingsCalendar from "@/components/bookings/bookings-calendar";
 import MiniMap from "@/components/map/mini-map";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import FavoriteButton from "@/components/favorites/favorite-button";
 
 export default async function SpaceDetailsPage({
   params,
@@ -85,10 +86,17 @@ export default async function SpaceDetailsPage({
                   <span className="text-muted-foreground">({adSpace.reviewCount} reviews)</span>
                 </div>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">{adSpace.name}</h1>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="h-5 w-5" />
-                <span>{adSpace.location}</span>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h1 className="text-3xl md:text-4xl font-bold mb-3">{adSpace.name}</h1>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="h-5 w-5" />
+                    <span>{adSpace.location}</span>
+                  </div>
+                </div>
+                {session?.user?.role === 'brand' && (
+                  <FavoriteButton spaceId={id} size="lg" />
+                )}
               </div>
             </div>
 
