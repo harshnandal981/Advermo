@@ -18,6 +18,7 @@ export interface IUser {
     campaignReminders: boolean;
     marketing: boolean;
   };
+  favoritesCount?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -74,6 +75,11 @@ const UserSchema = new Schema<IUser>(
         campaignReminders: true,
         marketing: false,
       }),
+    },
+    favoritesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
   },
   {
