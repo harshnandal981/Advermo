@@ -23,7 +23,7 @@ export default function PaymentStatus({
 }: PaymentStatusProps) {
   const getStatusConfig = () => {
     switch (status) {
-      case 'success':
+      case 'paid':
         return {
           icon: CheckCircle2,
           label: 'Paid',

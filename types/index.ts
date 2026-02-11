@@ -35,7 +35,8 @@ export interface Host {
 }
 
 export type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'active' | 'completed' | 'cancelled';
-export type PaymentStatus = 'pending' | 'paid' | 'refunded';
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'created';
+export type PaymentStatusType = PaymentStatus; // Alias for backward compatibility
 
 export interface Booking {
   _id: string;
@@ -145,4 +146,83 @@ export interface EmailPreferences {
   paymentReceipts: boolean;
   campaignReminders: boolean;
   marketing: boolean;
+}
+
+// Location and Map-related types
+export interface Location {
+  type: 'Point';
+  coordinates: [number, number]; // [lng, lat]
+  address: string;
+  city: string;
+  state: string;
+  zipCode?: string;
+  country: string;
+}
+
+export interface MapCenter {
+  lat: number;
+  lng: number;
+}
+
+export interface MapBounds {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+}
+
+export interface SearchFilters {
+  location?: {
+    lat: number;
+    lng: number;
+    radius: number; // in meters
+  };
+  city?: string;
+  priceRange?: { min: number; max: number };
+  venueTypes?: string[];
+  adFormats?: string[];
+  footfallRange?: { min: number; max: number };
+  minRating?: number;
+  availability?: { startDate: Date; endDate: Date };
+  sortBy?: 'distance' | 'price' | 'rating' | 'footfall';
+}
+
+// Razorpay payment types
+export interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+}
+
+export interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
+  theme?: {
+    color?: string;
+  };
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+export interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+// Razorpay window extension
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
 }
