@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
           stats: space.stats,
           rating: space.rating,
           reviewCount: space.reviewCount,
-          owner: owner ? { responseTime: owner.responseTime } : undefined,
+          owner: owner ? { responseTime: (owner as any).responseTime || 0 } : undefined,
         });
 
         // Add verified badge if space is verified

@@ -35,18 +35,18 @@ export async function PATCH(
     }
 
     // Get owner info
-    const owner = await User.findById(space.ownerId).lean();
+    const owner = await User.findById((space as any).ownerId).lean();
 
     // Calculate badges
     const badges = calculateSpaceBadges({
-      stats: space.stats,
-      rating: space.rating,
-      reviewCount: space.reviewCount,
-      owner: owner ? { responseTime: owner.responseTime } : undefined,
+      stats: (space as any).stats,
+      rating: (space as any).rating,
+      reviewCount: (space as any).reviewCount,
+      owner: owner ? { responseTime: (owner as any).responseTime || 0 } : undefined,
     });
 
     // Add verified badge if space is verified
-    if (space.verified) {
+    if ((space as any).verified) {
       badges.push('verified');
     }
 

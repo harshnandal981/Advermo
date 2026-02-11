@@ -35,16 +35,16 @@ export async function GET(
 
     // Calculate trust score
     const trustScore = calculateTrustScore({
-      emailVerified: user.emailVerified,
-      phoneVerified: user.phoneVerified,
-      isVerified: user.isVerified,
-      verificationType: user.verificationType,
-      responseTime: user.responseTime,
-      acceptanceRate: user.acceptanceRate,
-      createdAt: user.createdAt,
-      totalBookingsHosted: user.totalBookingsHosted,
-      totalBookingsMade: user.totalBookingsMade,
-      rating: user.rating,
+      emailVerified: (user as any).emailVerified,
+      phoneVerified: (user as any).phoneVerified,
+      isVerified: (user as any).isVerified,
+      verificationType: (user as any).verificationType,
+      responseTime: (user as any).responseTime,
+      acceptanceRate: (user as any).acceptanceRate,
+      createdAt: (user as any).createdAt,
+      totalBookingsHosted: (user as any).totalBookingsHosted,
+      totalBookingsMade: (user as any).totalBookingsMade,
+      rating: (user as any).rating,
     });
 
     // Update user's trust score in database

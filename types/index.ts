@@ -443,3 +443,20 @@ export interface VerificationRequest {
   reviewedBy?: string;
   rejectionReason?: string;
 }
+
+// Favorites types
+export interface Favorite {
+  _id: string;
+  userId: string;
+  spaceId: string;
+  space?: AdSpace; // Populated space data
+  addedAt: Date;
+  notes?: string;
+}
+
+export interface FavoritesStats {
+  totalCount: number;
+  totalValue: number;
+  topVenueType: string;
+  averagePrice: number;
+}
