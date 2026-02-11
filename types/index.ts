@@ -373,3 +373,21 @@ export interface UploadOptions {
   maxFiles?: number;
   allowedTypes?: string[];
 }
+
+// Favorites-related types
+export interface Favorite {
+  _id: string;
+  userId: string;
+  spaceId: string;
+  space?: AdSpace;
+  addedAt: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface FavoritesStats {
+  totalCount: number;
+  totalValue: number;
+  topVenueType: string;
+  averagePrice: number;
+}
