@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { sendEmail } from '@/lib/email/service';
+import WelcomeEmail from '@/emails/welcome';
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,6 +63,29 @@ export async function POST(req: NextRequest) {
       password: hashedPassword,
       role,
     });
+
+    // Send welcome email
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: 'Welcome to Advermo! 🎉',
+        react: WelcomeEmail({ 
+          user: {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          }
+        }),
+        template: 'welcome',
+        metadata: { 
+          userId: user._id.toString(), 
+          type: 'welcome' 
+        },
+      });
+    } catch (emailError) {
+      // Log error but don't fail registration
+      console.error('Error sending welcome email:', emailError);
+    }
 
     // Return user without password
     return NextResponse.json(

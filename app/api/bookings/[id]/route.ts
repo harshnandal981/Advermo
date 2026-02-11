@@ -3,6 +3,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Booking from '@/lib/models/Booking';
+import { sendEmail } from '@/lib/email/service';
+import { shouldSendEmail } from '@/lib/email/helpers';
+import { adSpaces } from '@/lib/data';
+import BookingConfirmedEmail from '@/emails/booking-confirmed';
+import BookingRejectedEmail from '@/emails/booking-rejected';
+import BookingCancelledEmail from '@/emails/booking-cancelled';
 
 // GET /api/bookings/:id - Get single booking details
 export async function GET(
@@ -113,6 +119,58 @@ export async function PATCH(
         booking.status = 'rejected';
         booking.rejectionReason = rejectionReason;
       }
+      
+      await booking.save();
+      
+      // Send email notifications
+      try {
+        const space = adSpaces.find((s) => s.id === booking.spaceId);
+        const spaceName = space?.name || booking.spaceName;
+        const spaceLocation = space?.location || '';
+        
+        if (action === 'confirm') {
+          // Email to brand
+          const shouldEmailBrand = await shouldSendEmail(booking.brandId, 'booking_confirmed');
+          if (shouldEmailBrand) {
+            await sendEmail({
+              to: booking.brandEmail,
+              subject: `Booking Confirmed! 🎉 ${spaceName}`,
+              react: BookingConfirmedEmail({ 
+                booking: booking.toObject() as any, 
+                space: { name: spaceName, location: spaceLocation } 
+              }),
+              template: 'booking_confirmed',
+              metadata: { 
+                bookingId: booking._id.toString(), 
+                type: 'booking_confirmed',
+                brandId: booking.brandId,
+              },
+            });
+          }
+        } else if (action === 'reject') {
+          // Email to brand
+          const shouldEmailBrand = await shouldSendEmail(booking.brandId, 'booking_rejected');
+          if (shouldEmailBrand) {
+            await sendEmail({
+              to: booking.brandEmail,
+              subject: `Booking Request Update - ${spaceName}`,
+              react: BookingRejectedEmail({ 
+                booking: booking.toObject() as any, 
+                space: { name: spaceName, location: spaceLocation },
+                reason: rejectionReason 
+              }),
+              template: 'booking_rejected',
+              metadata: { 
+                bookingId: booking._id.toString(), 
+                type: 'booking_rejected',
+                brandId: booking.brandId,
+              },
+            });
+          }
+        }
+      } catch (emailError) {
+        console.error('Error sending status update emails:', emailError);
+      }
     } else if (action === 'cancel') {
       // Only brands can cancel their own bookings
       if (booking.brandId !== session.user.id) {
@@ -131,6 +189,52 @@ export async function PATCH(
       }
 
       booking.status = 'cancelled';
+      
+      await booking.save();
+      
+      // Send cancellation email to both parties
+      try {
+        const space = adSpaces.find((s) => s.id === booking.spaceId);
+        const spaceName = space?.name || booking.spaceName;
+        const spaceLocation = space?.location || '';
+        
+        // Email to brand
+        const shouldEmailBrand = await shouldSendEmail(booking.brandId, 'booking_cancelled');
+        if (shouldEmailBrand) {
+          await sendEmail({
+            to: booking.brandEmail,
+            subject: `Booking Cancelled - ${spaceName}`,
+            react: BookingCancelledEmail({ 
+              booking: booking.toObject() as any,
+              cancelledBy: 'brand',
+            }),
+            template: 'booking_cancelled',
+            metadata: { 
+              bookingId: booking._id.toString(), 
+              type: 'booking_cancelled',
+            },
+          });
+        }
+        
+        // Email to venue owner
+        if (booking.venueOwnerEmail && booking.venueOwnerEmail !== 'owner@example.com') {
+          await sendEmail({
+            to: booking.venueOwnerEmail,
+            subject: `Booking Cancelled - ${spaceName}`,
+            react: BookingCancelledEmail({ 
+              booking: booking.toObject() as any,
+              cancelledBy: 'brand',
+            }),
+            template: 'booking_cancelled',
+            metadata: { 
+              bookingId: booking._id.toString(), 
+              type: 'booking_cancelled',
+            },
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending cancellation emails:', emailError);
+      }
     } else if (action === 'activate') {
       // System action to mark as active when start date arrives
       if (booking.status !== 'confirmed') {
