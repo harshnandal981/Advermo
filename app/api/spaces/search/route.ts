@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import AdSpace from '@/lib/models/AdSpace';
 
+// Constants for default filter values
+const MAX_PRICE_FILTER = 999999999;
+const MAX_FOOTFALL_FILTER = 999999999;
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -14,11 +18,11 @@ export async function GET(request: NextRequest) {
     const radius = parseInt(searchParams.get('radius') || '10000'); // Default 10km in meters
     const city = searchParams.get('city');
     const minPrice = parseFloat(searchParams.get('minPrice') || '0');
-    const maxPrice = parseFloat(searchParams.get('maxPrice') || '999999999');
+    const maxPrice = parseFloat(searchParams.get('maxPrice') || String(MAX_PRICE_FILTER));
     const venueType = searchParams.get('venueType');
     const adFormat = searchParams.get('adFormat');
     const minFootfall = parseInt(searchParams.get('minFootfall') || '0');
-    const maxFootfall = parseInt(searchParams.get('maxFootfall') || '999999999');
+    const maxFootfall = parseInt(searchParams.get('maxFootfall') || String(MAX_FOOTFALL_FILTER));
     const minRating = parseFloat(searchParams.get('minRating') || '0');
     const sort = searchParams.get('sort') || 'distance';
     

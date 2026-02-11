@@ -35,7 +35,7 @@ export interface Host {
 }
 
 export type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'active' | 'completed' | 'cancelled';
-export type PaymentStatus = 'pending' | 'paid' | 'refunded' | 'success' | 'failed' | 'created';
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'created';
 export type PaymentStatusType = PaymentStatus; // Alias for backward compatibility
 
 export interface Booking {
@@ -188,6 +188,11 @@ export interface SearchFilters {
 }
 
 // Razorpay payment types
+export interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+}
+
 export interface RazorpayOptions {
   key: string;
   amount: number;
@@ -218,6 +223,6 @@ export interface RazorpayResponse {
 // Razorpay window extension
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
   }
 }

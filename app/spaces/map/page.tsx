@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import MapView from '@/components/map/map-view';
 import SpaceMarker from '@/components/map/space-marker';
@@ -28,14 +28,17 @@ export default function MapPage() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [filters, setFilters] = useState<any>({});
 
-  // Mock coordinates for spaces (in production, these would come from the database)
-  const spacesWithCoordinates = adSpaces.map((space, index) => ({
-    ...space,
-    coordinates: {
-      lat: center.lat + (Math.random() - 0.5) * 0.1,
-      lng: center.lng + (Math.random() - 0.5) * 0.1,
-    },
-  }));
+  // Memoize mock coordinates for spaces to prevent re-calculation on every render
+  const spacesWithCoordinates = useMemo(() => {
+    return adSpaces.map((space, index) => ({
+      ...space,
+      coordinates: {
+        // Use deterministic position based on space ID to avoid jumping markers
+        lat: center.lat + ((index % 5) - 2) * 0.02,
+        lng: center.lng + (Math.floor(index / 5) % 5 - 2) * 0.02,
+      },
+    }));
+  }, [center.lat, center.lng]);
 
   const handleMyLocation = () => {
     if (navigator.geolocation) {

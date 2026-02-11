@@ -10,15 +10,16 @@ export function getMapBounds(spaces: AdSpace[]): MapBounds | null {
     return null;
   }
 
-  // For now, we'll use mock data since spaces don't have coordinates yet
-  // This will be updated when we integrate with the database
-  let north = -90;
-  let south = 90;
-  let east = -180;
-  let west = 180;
+  // Initialize with proper sentinel values
+  let north = -Infinity;
+  let south = Infinity;
+  let east = -Infinity;
+  let west = Infinity;
 
-  // Calculate bounds
-  // Note: This is placeholder logic until we have actual coordinates
+  // Calculate bounds from actual space coordinates
+  // Note: This is placeholder logic until we have actual coordinates in the AdSpace type
+  // In production, iterate through spaces and extract lat/lng from location.coordinates
+  
   return {
     north,
     south,

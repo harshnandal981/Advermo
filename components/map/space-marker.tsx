@@ -38,6 +38,11 @@ export default function SpaceMarker({
 }: SpaceMarkerProps) {
   const color = getMarkerColor(price, verified);
   
+  // Check if google.maps is available
+  if (typeof google === 'undefined' || !google.maps) {
+    return null;
+  }
+  
   // Create custom SVG icon
   const icon = {
     path: google.maps.SymbolPath.CIRCLE,

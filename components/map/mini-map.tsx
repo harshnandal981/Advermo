@@ -86,17 +86,19 @@ export default function MiniMap({ location, name, center }: MiniMapProps) {
             ],
           }}
         >
-          <Marker
-            position={mapCenter}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: '#6366F1',
-              fillOpacity: 1,
-              strokeColor: '#FFFFFF',
-              strokeWeight: 2,
-              scale: 10,
-            }}
-          />
+          {typeof google !== 'undefined' && google.maps && (
+            <Marker
+              position={mapCenter}
+              icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#6366F1',
+                fillOpacity: 1,
+                strokeColor: '#FFFFFF',
+                strokeWeight: 2,
+                scale: 10,
+              }}
+            />
+          )}
         </GoogleMap>
       </div>
       <div className="mt-4 flex items-center justify-between">
