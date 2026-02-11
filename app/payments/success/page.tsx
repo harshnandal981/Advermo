@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const bookingId = searchParams.get('bookingId');
@@ -113,12 +113,12 @@ export default function PaymentSuccessPage() {
             transition={{ delay: 0.6 }}
             className="mb-8 rounded-lg border bg-muted/50 p-6"
           >
-            <h3 className="mb-3 font-semibold">What's Next?</h3>
+            <h3 className="mb-3 font-semibold">What&apos;s Next?</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-green-600 dark:text-green-400">✓</span>
                 <span>
-                  You'll receive a confirmation email with all booking details
+                  You&apos;ll receive a confirmation email with all booking details
                 </span>
               </li>
               <li className="flex items-start gap-2">
@@ -158,5 +158,17 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

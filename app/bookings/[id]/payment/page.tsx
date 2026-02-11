@@ -26,11 +26,13 @@ export default async function BookingPaymentPage({
   await connectDB();
 
   // Fetch booking
-  const booking = await Booking.findById(id).lean();
+  const bookingDoc = await Booking.findById(id).lean();
 
-  if (!booking) {
+  if (!bookingDoc) {
     notFound();
   }
+
+  const booking: any = bookingDoc;
 
   // Verify user is the brand who made the booking
   if (booking.brandId !== session.user.id) {

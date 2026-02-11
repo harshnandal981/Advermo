@@ -1,12 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { XCircle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { XCircle, ArrowLeft, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function PaymentFailurePage() {
+function PaymentFailureContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const reason = searchParams.get('reason') || 'Payment was unsuccessful';
@@ -47,7 +48,7 @@ export default function PaymentFailurePage() {
               Payment Failed
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">
-              We couldn't process your payment. Don't worry, no amount has been
+              We couldn&apos;t process your payment. Don&apos;t worry, no amount has been
               charged.
             </p>
           </motion.div>
@@ -144,5 +145,17 @@ export default function PaymentFailurePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentFailurePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <PaymentFailureContent />
+    </Suspense>
   );
 }
