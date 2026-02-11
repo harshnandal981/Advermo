@@ -8,7 +8,8 @@ import {
   TrendingUp,
   Plus,
   Eye,
-  MessageSquare
+  MessageSquare,
+  BarChart3
 } from "lucide-react";
 import Link from "next/link";
 import ProtectedRoute from "@/lib/protected-route";
@@ -39,17 +40,25 @@ export default function HostDashboard() {
         {/* Header */}
         <div className="bg-gradient-to-b from-primary/10 to-background border-b">
           <div className="container mx-auto px-4 py-8">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Venue Owner Dashboard</h1>
                 <p className="text-muted-foreground">Monetize your space with advertising</p>
               </div>
-              <Link href="/host/new">
-                <Button size="lg">
-                  <Plus className="h-5 w-5 mr-2" />
-                  Add New Ad Spot
-                </Button>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href="/host/analytics">
+                  <Button variant="outline" size="lg">
+                    <BarChart3 className="h-5 w-5 mr-2" />
+                    View Analytics
+                  </Button>
+                </Link>
+                <Link href="/host/new">
+                  <Button size="lg">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Add New Ad Spot
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
