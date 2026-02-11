@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2",
     "@react-email/components": "^1.0.7",
+    "@react-google-maps/api": "^2.20.8",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -28,6 +30,7 @@
     "react-hook-form": "^7.53.2",
     "resend": "^6.9.2",
     "tailwind-merge": "^2.5.5",
+    "use-places-autocomplete": "^4.0.1",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

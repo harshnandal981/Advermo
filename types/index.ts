@@ -146,3 +146,42 @@ export interface EmailPreferences {
   campaignReminders: boolean;
   marketing: boolean;
 }
+
+// Location and Map-related types
+export interface Location {
+  type: 'Point';
+  coordinates: [number, number]; // [lng, lat]
+  address: string;
+  city: string;
+  state: string;
+  zipCode?: string;
+  country: string;
+}
+
+export interface MapCenter {
+  lat: number;
+  lng: number;
+}
+
+export interface MapBounds {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+}
+
+export interface SearchFilters {
+  location?: {
+    lat: number;
+    lng: number;
+    radius: number; // in meters
+  };
+  city?: string;
+  priceRange?: { min: number; max: number };
+  venueTypes?: string[];
+  adFormats?: string[];
+  footfallRange?: { min: number; max: number };
+  minRating?: number;
+  availability?: { startDate: Date; endDate: Date };
+  sortBy?: 'distance' | 'price' | 'rating' | 'footfall';
+}

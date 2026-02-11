@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { adSpaces } from "@/lib/data";
 import { AdSpaceType, SortOption } from "@/types";
 import SpaceCard from "@/components/ui/space-card";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, Map } from "lucide-react";
 
 const sortOptions: SortOption[] = [
   { label: "Highest Footfall", value: "footfall" },
@@ -43,6 +44,7 @@ const footfallRanges: { label: string; min: number; max: number }[] = [
 ];
 
 export default function SpacesPage() {
+  const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFormats, setSelectedFormats] = useState<AdSpaceType[]>([]);
   const [selectedVenues, setSelectedVenues] = useState<string[]>([]);
@@ -114,13 +116,25 @@ export default function SpacesPage() {
       {/* Header */}
       <div className="bg-gradient-to-b from-primary/10 to-background border-b">
         <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold mb-4">Explore Ad Spaces</h1>
-          <p className="text-muted-foreground mb-2">
-            Find high-traffic placements across premium venues
-          </p>
-          <p className="text-muted-foreground">
-            Showing {filteredSpaces.length} of {adSpaces.length} ad spaces
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-4">Explore Ad Spaces</h1>
+              <p className="text-muted-foreground mb-2">
+                Find high-traffic placements across premium venues
+              </p>
+              <p className="text-muted-foreground">
+                Showing {filteredSpaces.length} of {adSpaces.length} ad spaces
+              </p>
+            </div>
+            <Button
+              onClick={() => router.push('/spaces/map')}
+              variant="outline"
+              className="gap-2"
+            >
+              <Map className="w-4 h-4" />
+              Map View
+            </Button>
+          </div>
         </div>
       </div>
 
