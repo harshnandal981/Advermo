@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { Camera, Loader2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { validateImageFile } from '@/lib/utils/upload';
+import { toast } from '@/lib/utils/toast';
 
 interface AvatarUploaderProps {
   currentAvatar?: string;
@@ -36,7 +37,7 @@ export function AvatarUploader({
     const validation = validateImageFile(file);
     
     if (!validation.valid) {
-      alert(validation.error);
+      toast.error(validation.error || 'Invalid file');
       return;
     }
 
@@ -68,9 +69,11 @@ export function AvatarUploader({
       }
       setPreview(null);
       setSelectedFile(null);
+      
+      toast.success('Avatar uploaded successfully');
     } catch (error: any) {
       console.error('Upload error:', error);
-      alert(error.message || 'Failed to upload avatar');
+      toast.error(error.message || 'Failed to upload avatar');
     } finally {
       setIsUploading(false);
     }

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Star, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/utils/toast';
 import { ImageData } from '@/types';
 
 interface ImageGalleryProps {
@@ -25,16 +26,19 @@ export function ImageGallery({
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (publicId: string) => {
-    if (!confirm('Are you sure you want to delete this image?')) {
+    // Simple confirmation using native confirm for now
+    // TODO: Replace with custom modal dialog component
+    if (!window.confirm('Are you sure you want to delete this image?')) {
       return;
     }
 
     setDeletingId(publicId);
     try {
       await onDelete?.(publicId);
+      toast.success('Image deleted successfully');
     } catch (error) {
       console.error('Delete error:', error);
-      alert('Failed to delete image');
+      toast.error('Failed to delete image');
     } finally {
       setDeletingId(null);
     }
@@ -43,9 +47,10 @@ export function ImageGallery({
   const handleSetPrimary = async (publicId: string) => {
     try {
       await onSetPrimary?.(publicId);
+      toast.success('Primary image updated');
     } catch (error) {
       console.error('Set primary error:', error);
-      alert('Failed to set primary image');
+      toast.error('Failed to set primary image');
     }
   };
 

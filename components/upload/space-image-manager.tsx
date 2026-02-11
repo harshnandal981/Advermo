@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ImageUploader } from './image-uploader';
 import { ImageGallery } from './image-gallery';
 import { ImageLightbox } from './image-lightbox';
+import { toast } from '@/lib/utils/toast';
 import { ImageData } from '@/types';
 
 interface SpaceImageManagerProps {
@@ -70,7 +71,7 @@ export function SpaceImageManager({
         onImagesChange?.(updatedImages);
 
         if (result.summary.failed > 0) {
-          alert(`${result.summary.failed} image(s) failed to upload`);
+          toast.warning(`${result.summary.failed} image(s) failed to upload`);
         }
       } else if (files.length === 1) {
         // For single file

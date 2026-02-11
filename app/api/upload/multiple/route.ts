@@ -113,19 +113,19 @@ export async function POST(request: NextRequest) {
     // Connect to database and save successful uploads
     await connectDB();
     
-    const successfulUploads = results.filter((r) => r.success);
+    const successfulUploads = results.filter((r): r is { success: true; fileName: string; data: NonNullable<typeof r.data> } => r.success && r.data !== undefined);
     if (successfulUploads.length > 0) {
       const uploadRecords = successfulUploads.map((result) => ({
         userId,
         resourceType,
         ...(resourceId && { resourceId }),
-        publicId: result.data!.publicId,
-        url: result.data!.url,
-        secureUrl: result.data!.url,
-        format: result.data!.format,
-        width: result.data!.width,
-        height: result.data!.height,
-        bytes: result.data!.bytes,
+        publicId: result.data.publicId,
+        url: result.data.url,
+        secureUrl: result.data.url,
+        format: result.data.format,
+        width: result.data.width,
+        height: result.data.height,
+        bytes: result.data.bytes,
         uploadedAt: new Date(),
       }));
 

@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { validateImageFile, formatFileSize } from '@/lib/utils/upload';
+import { toast } from '@/lib/utils/toast';
 import { UploadProgress as UploadProgressType } from '@/types';
 
 interface ImageUploaderProps {
@@ -42,13 +43,14 @@ export function ImageUploader({
 
     // Show errors if any
     if (errors.length > 0) {
-      alert(errors.join('\n'));
+      toast.error(errors.join(', '));
+      return;
     }
 
     // Check total file count
     const totalFiles = existingImages.length + validFiles.length + previews.length;
     if (totalFiles > maxFiles) {
-      alert(`Maximum ${maxFiles} images allowed. You have ${existingImages.length} existing images.`);
+      toast.error(`Maximum ${maxFiles} images allowed. You have ${existingImages.length} existing images.`);
       return;
     }
 
@@ -100,9 +102,11 @@ export function ImageUploader({
       previews.forEach((p) => URL.revokeObjectURL(p.preview));
       setPreviews([]);
       setUploadProgress([]);
+      
+      toast.success(`Successfully uploaded ${previews.length} image${previews.length > 1 ? 's' : ''}`);
     } catch (error: any) {
       console.error('Upload error:', error);
-      alert(error.message || 'Failed to upload images');
+      toast.error(error.message || 'Failed to upload images');
     } finally {
       setIsUploading(false);
     }
