@@ -336,3 +336,29 @@ export interface AnalyticsFilters {
 
 export type ExportFormat = 'csv' | 'pdf';
 export type ExportType = 'revenue' | 'bookings' | 'all';
+
+// Favorites/Wishlist types
+export interface Favorite {
+  _id: string;
+  userId: string;
+  spaceId: string;
+  space?: AdSpace; // Populated
+  addedAt: Date;
+  notes?: string;
+}
+
+export interface FavoritesStats {
+  totalCount: number;
+  totalValue: number;
+  topVenueType: string;
+  averagePrice: number;
+}
+
+export interface CompareSpace {
+  space: AdSpace;
+  metrics: {
+    pricePerImpression: number;
+    valueScore: number;
+  };
+}
+

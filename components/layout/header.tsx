@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Moon, Sun, Menu, User, LogOut, LayoutDashboard, Calendar } from "lucide-react";
+import { Moon, Sun, Menu, User, LogOut, LayoutDashboard, Calendar, Heart } from "lucide-react";
 import { useTheme } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import AuthModal from "@/components/auth/auth-modal";
+import FavoritesBadge from "@/components/favorites/favorites-badge";
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
@@ -70,6 +71,8 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            {session?.user.role === 'brand' && <FavoritesBadge />}
+            
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-accent transition-colors"
@@ -171,9 +174,14 @@ export default function Header() {
                 Explore Ad Spaces
               </Link>
               {session?.user.role === 'brand' && (
-                <Link href="/bookings" className="text-sm font-medium hover:text-primary transition-colors">
-                  My Bookings
-                </Link>
+                <>
+                  <Link href="/favorites" className="text-sm font-medium hover:text-primary transition-colors">
+                    My Favorites
+                  </Link>
+                  <Link href="/bookings" className="text-sm font-medium hover:text-primary transition-colors">
+                    My Bookings
+                  </Link>
+                </>
               )}
               {session?.user.role === 'venue' && (
                 <>
