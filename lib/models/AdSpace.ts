@@ -40,6 +40,15 @@ export interface IAdSpace {
   verified: boolean;
   ownerId: Schema.Types.ObjectId;
   ownerEmail: string;
+  // Social proof fields
+  stats?: {
+    totalViews: number;
+    totalBookings: number;
+    viewsThisWeek: number;
+    bookingsThisWeek: number;
+    lastBookedAt?: Date;
+  };
+  badges?: ('popular' | 'rising' | 'top_rated' | 'quick_response' | 'verified' | 'best_value')[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -195,6 +204,34 @@ const adSpaceSchema = new Schema<IAdSpace>(
       type: String,
       required: [true, 'Owner email is required'],
     },
+    // Social proof fields
+    stats: {
+      totalViews: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      totalBookings: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      viewsThisWeek: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      bookingsThisWeek: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+      lastBookedAt: Date,
+    },
+    badges: [{
+      type: String,
+      enum: ['popular', 'rising', 'top_rated', 'quick_response', 'verified', 'best_value'],
+    }],
   },
   {
     timestamps: true,

@@ -12,6 +12,8 @@ export interface IUser {
     publicId: string;
   };
   emailVerified?: Date;
+  phoneVerified?: Date;
+  phone?: string;
   emailPreferences?: {
     bookingUpdates: boolean;
     paymentReceipts: boolean;
@@ -19,6 +21,29 @@ export interface IUser {
     marketing: boolean;
   };
   favoritesCount?: number;
+  // Verification & Trust fields
+  isVerified?: boolean;
+  verifiedAt?: Date;
+  verificationType?: 'email' | 'phone' | 'identity' | 'business';
+  verificationStatus?: 'none' | 'pending' | 'approved' | 'rejected';
+  verificationDocuments?: {
+    type: string;
+    url: string;
+    publicId: string;
+    uploadedAt: Date;
+  }[];
+  trustScore?: number; // 0-100
+  responseTime?: number; // Average hours to respond
+  acceptanceRate?: number; // Percentage of bookings accepted
+  totalBookingsHosted?: number;
+  totalBookingsMade?: number;
+  yearsInBusiness?: number;
+  businessDetails?: {
+    name?: string;
+    registrationNumber?: string;
+    gstNumber?: string;
+    address?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -62,6 +87,13 @@ const UserSchema = new Schema<IUser>(
     emailVerified: {
       type: Date,
     },
+    phoneVerified: {
+      type: Date,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
     emailPreferences: {
       type: {
         bookingUpdates: { type: Boolean, default: true },
@@ -80,6 +112,79 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
       min: 0,
+    },
+    // Verification & Trust fields
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verifiedAt: {
+      type: Date,
+    },
+    verificationType: {
+      type: String,
+      enum: ['email', 'phone', 'identity', 'business'],
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['none', 'pending', 'approved', 'rejected'],
+      default: 'none',
+    },
+    verificationDocuments: [{
+      type: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+      publicId: {
+        type: String,
+        required: true,
+      },
+      uploadedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    }],
+    trustScore: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    responseTime: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    acceptanceRate: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    totalBookingsHosted: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    totalBookingsMade: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    yearsInBusiness: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    businessDetails: {
+      name: String,
+      registrationNumber: String,
+      gstNumber: String,
+      address: String,
     },
   },
   {
