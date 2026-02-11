@@ -129,6 +129,13 @@ export async function POST(req: NextRequest) {
     try {
       const space = adSpaces.find((s) => s.id === spaceId);
       if (space) {
+        // Extract city from location (handle various formats)
+        let city = '';
+        if (space.location) {
+          const locationParts = space.location.split(',');
+          city = locationParts[0]?.trim() || '';
+        }
+        
         await Activity.create({
           type: 'review_posted',
           userId: session.user.id,
@@ -137,7 +144,7 @@ export async function POST(req: NextRequest) {
           resourceName: space.name,
           timestamp: new Date(),
           isPublic: true,
-          city: space.location.split(',')[0].trim(),
+          city,
         });
       }
     } catch (activityError) {

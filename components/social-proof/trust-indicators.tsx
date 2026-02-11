@@ -39,7 +39,7 @@ export function TrustIndicators({
   if (responseTime !== undefined) {
     let label = 'Responds quickly';
     if (responseTime < 1) label = 'Responds in 30 min';
-    else if (responseTime < 2) label = `Responds in ${responseTime} hour${responseTime > 1 ? 's' : ''}`;
+    else if (responseTime < 2) label = `Responds in ${responseTime} ${responseTime === 1 ? 'hour' : 'hours'}`;
     else if (responseTime < 24) label = `Responds in ${Math.round(responseTime)} hours`;
     
     indicators.push({

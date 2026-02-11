@@ -72,13 +72,13 @@ export function generateSessionId(): string {
     }
     
     // Generate new session ID
-    const newId = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const newId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     localStorage.setItem('advermo_session_id', newId);
     return newId;
   }
   
   // Server-side or fallback
-  return `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `sess_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**

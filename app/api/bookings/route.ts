@@ -232,6 +232,13 @@ export async function POST(req: NextRequest) {
 
     // Log activity for social proof
     try {
+      // Extract city from location (handle various formats)
+      let city = '';
+      if (space.location) {
+        const locationParts = space.location.split(',');
+        city = locationParts[0]?.trim() || '';
+      }
+      
       await Activity.create({
         type: 'booking_created',
         userId: session.user.id,
@@ -240,7 +247,7 @@ export async function POST(req: NextRequest) {
         resourceName: space.name,
         timestamp: new Date(),
         isPublic: true,
-        city: space.location.split(',')[0].trim(), // Extract city from location
+        city,
       });
     } catch (activityError) {
       // Log error but don't fail the booking

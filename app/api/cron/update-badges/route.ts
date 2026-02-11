@@ -58,12 +58,12 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Reset weekly stats (optional - run this on Sunday/Monday)
+    // Reset weekly stats on Monday only (consistent weekly cycle)
     const now = new Date();
     const dayOfWeek = now.getDay();
     
-    if (dayOfWeek === 0 || dayOfWeek === 1) {
-      // Reset weekly counters on Sunday or Monday
+    if (dayOfWeek === 1) {
+      // Reset weekly counters on Monday
       await AdSpace.updateMany(
         {},
         {
