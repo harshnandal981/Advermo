@@ -92,7 +92,7 @@ export default function Testimonials() {
           <div className="bg-background rounded-2xl p-8 md:p-12 shadow-lg border relative">
             {/* Quote */}
             <div className="text-center space-y-6">
-              <div className="text-6xl text-primary/20">"</div>
+              <div className="text-6xl text-primary/20">&ldquo;</div>
               <p className="text-lg md:text-xl text-foreground leading-relaxed italic">
                 {currentTestimonial.quote}
               </p>
