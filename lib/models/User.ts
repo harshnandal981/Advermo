@@ -6,7 +6,11 @@ export interface IUser {
   email: string;
   password?: string;
   role: 'brand' | 'venue';
-  image?: string;
+  image?: string; // Legacy support
+  profileImage?: {
+    url: string;
+    publicId: string;
+  };
   emailVerified?: Date;
   emailPreferences?: {
     bookingUpdates: boolean;
@@ -45,6 +49,14 @@ const UserSchema = new Schema<IUser>(
     },
     image: {
       type: String,
+    },
+    profileImage: {
+      url: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+      },
     },
     emailVerified: {
       type: Date,

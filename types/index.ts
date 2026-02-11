@@ -336,3 +336,40 @@ export interface AnalyticsFilters {
 
 export type ExportFormat = 'csv' | 'pdf';
 export type ExportType = 'revenue' | 'bookings' | 'all';
+
+// Image Upload Types
+export interface ImageData {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+  uploadedAt: Date;
+  isPrimary?: boolean;
+  order?: number;
+}
+
+export interface UploadProgress {
+  fileName: string;
+  progress: number;
+  status: 'uploading' | 'success' | 'error';
+  error?: string;
+}
+
+export interface CloudinaryUploadResult {
+  public_id: string;
+  secure_url: string;
+  url: string;
+  width: number;
+  height: number;
+  format: string;
+  bytes: number;
+  created_at: string;
+}
+
+export interface UploadOptions {
+  folder: 'spaces' | 'profiles' | 'proofs' | 'reviews';
+  maxSize?: number;
+  maxFiles?: number;
+  allowedTypes?: string[];
+}
