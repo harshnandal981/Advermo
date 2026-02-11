@@ -373,3 +373,73 @@ export interface UploadOptions {
   maxFiles?: number;
   allowedTypes?: string[];
 }
+
+// Social Proof & Trust System Types
+export interface Activity {
+  _id: string;
+  type: 'booking_created' | 'space_viewed' | 'review_posted' | 'verification_completed';
+  userId: string;
+  userName: string; // Anonymized format: "John S."
+  resourceId: string;
+  resourceName: string;
+  timestamp: Date;
+  isPublic: boolean;
+  city?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ViewCounter {
+  _id: string;
+  spaceId: string;
+  sessionId: string;
+  lastSeenAt: Date;
+  expiresAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TrustScore {
+  total: number;
+  breakdown: {
+    emailVerified: number;
+    phoneVerified: number;
+    identityVerified: number;
+    businessVerified: number;
+    responseTime: number;
+    acceptanceRate: number;
+    accountAge: number;
+    bookingHistory: number;
+    averageRating: number;
+  };
+}
+
+export type BadgeType = 'popular' | 'rising' | 'top_rated' | 'quick_response' | 'verified' | 'best_value';
+
+export type VerificationType = 'email' | 'phone' | 'identity' | 'business';
+
+export type VerificationStatus = 'none' | 'pending' | 'approved' | 'rejected';
+
+export interface VerificationDocument {
+  type: string;
+  url: string;
+  publicId: string;
+  uploadedAt: Date;
+}
+
+export interface VerificationRequest {
+  userId: string;
+  verificationType: VerificationType;
+  documents: VerificationDocument[];
+  businessDetails?: {
+    name?: string;
+    registrationNumber?: string;
+    gstNumber?: string;
+    address?: string;
+  };
+  status: VerificationStatus;
+  submittedAt: Date;
+  reviewedAt?: Date;
+  reviewedBy?: string;
+  rejectionReason?: string;
+}
