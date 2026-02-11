@@ -20,6 +20,7 @@ import ReviewForm from "@/components/reviews/review-form";
 import ReviewsList from "@/components/reviews/reviews-list";
 import BookingForm from "@/components/bookings/booking-form";
 import BookingsCalendar from "@/components/bookings/bookings-calendar";
+import MiniMap from "@/components/map/mini-map";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -158,16 +159,13 @@ export default async function SpaceDetailsPage({
               <BookingsCalendar spaceId={id} />
             </div>
 
-            {/* Map (Mock) */}
+            {/* Location Map */}
             <div>
               <h2 className="text-2xl font-semibold mb-4">Location</h2>
-              <div className="h-64 rounded-xl bg-card border flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-                  <p className="text-muted-foreground">Map view will be displayed here</p>
-                  <p className="text-sm text-muted-foreground mt-1">{adSpace.location}</p>
-                </div>
-              </div>
+              <MiniMap 
+                location={adSpace.location} 
+                name={adSpace.name}
+              />
             </div>
 
             {/* Venue Owner Info */}
