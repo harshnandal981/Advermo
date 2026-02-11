@@ -109,62 +109,40 @@ export interface ReviewStats {
   };
 }
 
-// Payment Types
-export type PaymentStatusType = 'created' | 'pending' | 'success' | 'failed' | 'refunded';
+// Email-related types
+export type EmailTemplate = 
+  | 'welcome'
+  | 'booking_created'
+  | 'booking_received'
+  | 'booking_confirmed'
+  | 'booking_rejected'
+  | 'payment_success'
+  | 'payment_failed'
+  | 'refund_processed'
+  | 'campaign_starting_soon'
+  | 'campaign_started'
+  | 'campaign_completed'
+  | 'booking_cancelled'
+  | 'password_reset'
+  | 'email_verification';
 
-export interface Payment {
+export interface EmailLog {
   _id: string;
-  bookingId: string;
-  brandId: string;
-  amount: number;
-  currency: string;
-  razorpayOrderId: string;
-  razorpayPaymentId?: string;
-  razorpaySignature?: string;
-  status: PaymentStatusType;
-  method?: string;
-  receipt: string;
-  notes?: Record<string, any>;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-  completedAt?: Date | string;
+  recipient: string;
+  subject: string;
+  template: EmailTemplate;
+  status: 'sent' | 'failed' | 'bounced' | 'delivered' | 'opened';
+  resendId?: string;
+  metadata: Record<string, any>;
+  error?: string;
+  sentAt: Date;
+  deliveredAt?: Date;
+  openedAt?: Date;
 }
 
-export interface RazorpayResponse {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}
-
-export interface RazorpayOptions {
-  key: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id: string;
-  handler: (response: RazorpayResponse) => void;
-  prefill: {
-    name: string;
-    email: string;
-    contact: string;
-  };
-  theme: {
-    color: string;
-  };
-  modal?: {
-    ondismiss?: () => void;
-  };
-}
-
-// Extend global Window interface for Razorpay
-interface RazorpayInstance {
-  open: () => void;
-  on: (event: string, handler: (...args: any[]) => void) => void;
-}
-
-declare global {
-  interface Window {
-    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
-  }
+export interface EmailPreferences {
+  bookingUpdates: boolean;
+  paymentReceipts: boolean;
+  campaignReminders: boolean;
+  marketing: boolean;
 }

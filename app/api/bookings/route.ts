@@ -4,6 +4,10 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Booking from '@/lib/models/Booking';
 import { adSpaces } from '@/lib/data';
+import { sendEmail } from '@/lib/email/service';
+import { shouldSendEmail } from '@/lib/email/helpers';
+import BookingCreatedEmail from '@/emails/booking-created';
+import BookingReceivedEmail from '@/emails/booking-received';
 
 // Helper function to check date conflicts
 async function checkDateConflict(
@@ -175,6 +179,54 @@ export async function POST(req: NextRequest) {
       paymentStatus: 'pending',
       notes: notes || undefined,
     });
+
+    // Send email notifications
+    try {
+      // Email to brand (booking creator)
+      const shouldEmailBrand = await shouldSendEmail(session.user.id, 'booking_created');
+      if (shouldEmailBrand) {
+        await sendEmail({
+          to: session.user.email!,
+          subject: 'Booking Request Submitted - Awaiting Confirmation',
+          react: BookingCreatedEmail({ 
+            booking: booking as any, 
+            space: { name: space.name, location: space.location } 
+          }),
+          template: 'booking_created',
+          metadata: { 
+            bookingId: booking._id.toString(), 
+            type: 'booking_created',
+            brandId: session.user.id,
+          },
+        });
+      }
+
+      // Email to venue owner
+      // Note: Using placeholder email until space-owner relationship is implemented
+      if (booking.venueOwnerEmail && booking.venueOwnerEmail !== 'owner@example.com') {
+        await sendEmail({
+          to: booking.venueOwnerEmail,
+          subject: `New Booking Request for ${space.name}`,
+          react: BookingReceivedEmail({ 
+            booking: booking as any, 
+            brand: {
+              name: session.user.name!,
+              email: session.user.email!,
+            },
+            space: { name: space.name, location: space.location } 
+          }),
+          template: 'booking_received',
+          metadata: { 
+            bookingId: booking._id.toString(), 
+            type: 'booking_received',
+            venueOwnerId: booking.venueOwnerId,
+          },
+        });
+      }
+    } catch (emailError) {
+      // Log email error but don't fail the booking creation
+      console.error('Error sending booking emails:', emailError);
+    }
 
     return NextResponse.json(
       { booking, message: 'Booking request created successfully' },
