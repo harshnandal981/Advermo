@@ -226,3 +226,113 @@ declare global {
     Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
   }
 }
+
+// Analytics types
+export interface ChartDataPoint {
+  date: string;
+  value: number;
+  label?: string;
+  amount?: number;
+  count?: number;
+  rate?: number;
+}
+
+export interface RevenueMetrics {
+  total: number;
+  thisMonth: number;
+  lastMonth: number;
+  growth: number;
+  chartData: ChartDataPoint[];
+}
+
+export interface BookingMetrics {
+  total: number;
+  pending: number;
+  confirmed: number;
+  active: number;
+  completed: number;
+  cancelled: number;
+  chartData: ChartDataPoint[];
+}
+
+export interface SpaceMetrics {
+  total: number;
+  averageRating: number;
+  totalReviews: number;
+  topPerforming: TopSpace[];
+}
+
+export interface OccupancyMetrics {
+  rate: number;
+  heatmapData: ChartDataPoint[];
+}
+
+export interface AdFormatMetrics {
+  distribution: Array<{ format: string; count: number; revenue: number }>;
+}
+
+export interface GeneralMetrics {
+  averageBookingValue: number;
+  averageDuration: number;
+  conversionRate: number;
+  responseTime: number;
+}
+
+export interface TopSpace {
+  space: AdSpace;
+  revenue: number;
+  bookingCount: number;
+  occupancyRate: number;
+  averageRating: number;
+}
+
+export interface VenueOwnerAnalytics {
+  revenue: RevenueMetrics;
+  bookings: BookingMetrics;
+  spaces: SpaceMetrics;
+  occupancy: OccupancyMetrics;
+  adFormats: AdFormatMetrics;
+  metrics: GeneralMetrics;
+}
+
+export interface CampaignMetrics {
+  total: number;
+  active: number;
+  completed: number;
+  totalSpent: number;
+  chartData: ChartDataPoint[];
+}
+
+export interface SpendingMetrics {
+  total: number;
+  thisMonth: number;
+  byVenueType: Array<{ type: string; amount: number }>;
+  chartData: ChartDataPoint[];
+}
+
+export interface PerformanceMetrics {
+  totalImpressions: number;
+  averageCPM: number;
+  topVenues: Array<{ space: AdSpace; spent: number; impressions: number }>;
+}
+
+export interface BrandAnalytics {
+  campaigns: CampaignMetrics;
+  spending: SpendingMetrics;
+  performance: PerformanceMetrics;
+}
+
+export type DateRangePreset = 'today' | 'last7days' | 'last30days' | 'last90days' | 'thisYear' | 'custom';
+
+export interface DateRange {
+  startDate: Date;
+  endDate: Date;
+}
+
+export interface AnalyticsFilters {
+  dateRange: DateRange;
+  spaceId?: string;
+}
+
+export type ExportFormat = 'csv' | 'pdf';
+export type ExportType = 'revenue' | 'bookings' | 'all';

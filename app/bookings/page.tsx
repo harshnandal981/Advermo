@@ -5,7 +5,9 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Booking } from '@/types';
 import BookingCard from '@/components/bookings/booking-card';
-import { Calendar, Loader2 } from 'lucide-react';
+import { Calendar, Loader2, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const tabs = [
   { id: 'all', label: 'All' },
@@ -63,11 +65,21 @@ export default function MyBookingsPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
-          <p className="text-muted-foreground">
-            Manage your ad space booking requests
-          </p>
+        <div className="mb-8 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
+            <p className="text-muted-foreground">
+              Manage your ad space booking requests
+            </p>
+          </div>
+          {session?.user?.role === 'brand' && (
+            <Link href="/dashboard/analytics">
+              <Button variant="outline">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                View Analytics
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Tabs */}
