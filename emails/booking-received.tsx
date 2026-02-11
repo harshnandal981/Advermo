@@ -132,7 +132,7 @@ const brandEmail = {
 
 const urgencyBox = {
   backgroundColor: '#dbeafe',
-  border: '1px solid '#3b82f6',
+  border: '1px solid #3b82f6',
   borderRadius: '6px',
   padding: '16px',
   fontSize: '14px',

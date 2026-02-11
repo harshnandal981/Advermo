@@ -1,5 +1,5 @@
 import connectDB from '@/lib/mongodb';
-import User from '@/lib/models/User';
+import User, { IUser } from '@/lib/models/User';
 import { EmailPreferences, EmailTemplate } from '@/types';
 
 /**
@@ -46,7 +46,7 @@ export function formatDateTime(date: Date | string): string {
 export async function getUserEmailPreferences(userId: string): Promise<EmailPreferences> {
   try {
     await connectDB();
-    const user = await User.findById(userId).lean();
+    const user = (await User.findById(userId).lean()) as unknown as IUser | null;
     
     if (!user || !user.emailPreferences) {
       // Return default preferences

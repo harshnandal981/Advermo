@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Booking from '@/lib/models/Booking';
+import Booking, { IBooking } from '@/lib/models/Booking';
 import { sendEmail } from '@/lib/email/service';
 import { shouldSendEmail } from '@/lib/email/helpers';
 import { adSpaces } from '@/lib/data';
@@ -38,13 +38,13 @@ export async function POST(req: NextRequest) {
     const errors: string[] = [];
 
     // 1. Find campaigns starting tomorrow
-    const startingTomorrow = await Booking.find({
+    const startingTomorrow = (await Booking.find({
       status: 'confirmed',
       startDate: {
         $gte: tomorrow,
         $lt: dayAfterTomorrow,
       },
-    }).lean();
+    }).lean()) as unknown as IBooking[];
 
     for (const booking of startingTomorrow) {
       try {

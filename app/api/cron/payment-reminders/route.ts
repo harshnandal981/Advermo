@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Booking from '@/lib/models/Booking';
+import Booking, { IBooking } from '@/lib/models/Booking';
 import { sendEmail } from '@/lib/email/service';
 import { shouldSendEmail } from '@/lib/email/helpers';
 import PaymentFailedEmail from '@/emails/payment-failed';
@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
     const errors: string[] = [];
 
     // 1. Find confirmed but unpaid bookings > 12 hours old (send reminder)
-    const unpaidBookings = await Booking.find({
+    const unpaidBookings = (await Booking.find({
       status: 'confirmed',
       paymentStatus: 'pending',
       updatedAt: {
         $gte: twentyFourHoursAgo,
         $lte: twelveHoursAgo,
       },
-    }).lean();
+    }).lean()) as unknown as IBooking[];
 
     for (const booking of unpaidBookings) {
       try {

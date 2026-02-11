@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
-import User from '@/lib/models/User';
+import User, { IUser } from '@/lib/models/User';
 
 // GET /api/email/preferences - Get user's email preferences
 export async function GET(req: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const user = await User.findById(session.user.id).lean();
+    const user = (await User.findById(session.user.id).lean()) as unknown as IUser | null;
     
     if (!user) {
       return NextResponse.json(
@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
     await connectDB();
 
     // Update user preferences
-    const user = await User.findByIdAndUpdate(
+    const updatedUser = (await User.findByIdAndUpdate(
       session.user.id,
       {
         $set: {
@@ -105,9 +105,9 @@ export async function PUT(req: NextRequest) {
         },
       },
       { new: true }
-    ).lean();
+    ).lean()) as unknown as IUser | null;
 
-    if (!user) {
+    if (!updatedUser) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
@@ -116,7 +116,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({
       message: 'Email preferences updated successfully',
-      preferences: user.emailPreferences,
+      preferences: updatedUser.emailPreferences,
     });
   } catch (error: any) {
     console.error('Error updating email preferences:', error);
