@@ -55,6 +55,9 @@ export interface Booking {
   totalPrice: number;
   status: BookingStatus;
   paymentStatus: PaymentStatus;
+  paymentId?: string;
+  isPaid: boolean;
+  paidAt?: Date | string;
   notes?: string;
   rejectionReason?: string;
   createdAt: Date | string;

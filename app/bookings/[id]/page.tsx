@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 import connectDB from '@/lib/mongodb';
 import Booking from '@/lib/models/Booking';
+import Payment from '@/lib/models/Payment';
 import BookingDetails from '@/components/bookings/booking-details';
 
 export default async function BookingDetailsPage({
@@ -35,15 +36,33 @@ export default async function BookingDetailsPage({
     notFound();
   }
 
+  // Fetch payment details if available
+  let paymentData = null;
+  if (booking.paymentId) {
+    const payment = await Payment.findById(booking.paymentId).lean() as any;
+    if (payment) {
+      paymentData = {
+        ...payment,
+        _id: payment._id.toString(),
+        bookingId: payment.bookingId.toString(),
+        createdAt: payment.createdAt.toISOString(),
+        updatedAt: payment.updatedAt.toISOString(),
+        completedAt: payment.completedAt?.toISOString(),
+      };
+    }
+  }
+
   // Convert dates to strings for serialization
   const bookingData = {
     ...booking,
     _id: booking._id.toString(),
+    paymentId: booking.paymentId?.toString(),
     startDate: booking.startDate.toISOString(),
     endDate: booking.endDate.toISOString(),
+    paidAt: booking.paidAt?.toISOString(),
     createdAt: booking.createdAt.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
   };
 
-  return <BookingDetails booking={bookingData} userRole={session.user.role} />;
+  return <BookingDetails booking={bookingData} userRole={session.user.role} payment={paymentData} />;
 }
