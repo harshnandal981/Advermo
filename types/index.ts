@@ -158,8 +158,13 @@ export interface RazorpayOptions {
 }
 
 // Extend global Window interface for Razorpay
+interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+}
+
 declare global {
   interface Window {
-    Razorpay?: any;
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
   }
 }

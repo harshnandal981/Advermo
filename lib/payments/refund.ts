@@ -1,6 +1,16 @@
 import { differenceInDays } from 'date-fns';
 import { Booking } from '@/types';
 
+// Refund policy constants
+const FULL_REFUND_DAYS = 7;
+const PARTIAL_REFUND_DAYS = 3;
+const FULL_REFUND_PERCENTAGE = 1.0;
+const PARTIAL_REFUND_PERCENTAGE = 0.5;
+
+// Commission and tax constants
+const PLATFORM_COMMISSION_RATE = 0.15; // 15%
+const GST_RATE = 0.18; // 18%
+
 /**
  * Calculates refund amount based on cancellation date
  * @param booking - The booking to calculate refund for
@@ -15,13 +25,13 @@ export function calculateRefundAmount(
   const daysUntilStart = differenceInDays(startDate, cancelDate);
 
   // Full refund if cancelled 7+ days before start
-  if (daysUntilStart >= 7) {
-    return booking.totalPrice;
+  if (daysUntilStart >= FULL_REFUND_DAYS) {
+    return Math.floor(booking.totalPrice * FULL_REFUND_PERCENTAGE);
   }
 
   // 50% refund if cancelled 3-6 days before start
-  if (daysUntilStart >= 3) {
-    return Math.floor(booking.totalPrice * 0.5);
+  if (daysUntilStart >= PARTIAL_REFUND_DAYS) {
+    return Math.floor(booking.totalPrice * PARTIAL_REFUND_PERCENTAGE);
   }
 
   // No refund if cancelled less than 3 days before start
@@ -62,7 +72,7 @@ export function isRefundEligible(booking: Booking): boolean {
  * @returns number - Commission amount
  */
 export function calculateCommission(totalPrice: number): number {
-  return Math.floor(totalPrice * 0.15);
+  return Math.floor(totalPrice * PLATFORM_COMMISSION_RATE);
 }
 
 /**
@@ -71,7 +81,7 @@ export function calculateCommission(totalPrice: number): number {
  * @returns number - GST amount
  */
 export function calculateGST(commission: number): number {
-  return Math.floor(commission * 0.18);
+  return Math.floor(commission * GST_RATE);
 }
 
 /**

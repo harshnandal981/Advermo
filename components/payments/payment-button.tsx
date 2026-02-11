@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { loadRazorpay } from '@/lib/razorpay';
-import { RazorpayOptions } from '@/types';
+import { RazorpayOptions, RazorpayResponse } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
@@ -65,7 +65,7 @@ export default function PaymentButton({
         theme: {
           color: '#6366f1', // Indigo-500
         },
-        handler: async (response: any) => {
+        handler: async (response: RazorpayResponse) => {
           try {
             // Verify payment
             const verifyResponse = await fetch('/api/payments/verify', {
@@ -94,12 +94,13 @@ export default function PaymentButton({
               // Redirect to success page
               window.location.href = `/payments/success?bookingId=${bookingId}`;
             }
-          } catch (error: any) {
-            console.error('Payment verification error:', error);
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            console.error('Payment verification error:', errorMessage);
             if (onFailure) {
-              onFailure(error.message);
+              onFailure(errorMessage);
             } else {
-              window.location.href = `/payments/failure?reason=${encodeURIComponent(error.message)}`;
+              window.location.href = `/payments/failure?reason=${encodeURIComponent(errorMessage)}`;
             }
           }
         },
@@ -111,15 +112,16 @@ export default function PaymentButton({
       };
 
       // Open Razorpay checkout
-      const razorpay = new window.Razorpay(options);
+      const razorpay = new window.Razorpay!(options);
       razorpay.open();
-    } catch (error: any) {
-      console.error('Payment error:', error);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to initiate payment';
+      console.error('Payment error:', errorMessage);
       setLoading(false);
       if (onFailure) {
-        onFailure(error.message);
+        onFailure(errorMessage);
       } else {
-        alert(error.message || 'Failed to initiate payment');
+        alert(errorMessage);
       }
     }
   };

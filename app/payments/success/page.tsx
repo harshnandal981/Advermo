@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+import { Booking } from '@/types';
+
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const bookingId = searchParams.get('bookingId');
   const [loading, setLoading] = useState(true);
-  const [booking, setBooking] = useState<any>(null);
+  const [booking, setBooking] = useState<Booking | null>(null);
 
   useEffect(() => {
     if (bookingId) {

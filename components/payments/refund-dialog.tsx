@@ -68,8 +68,9 @@ export default function RefundDialog({
         // Reload page to show updated status
         window.location.reload();
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to process refund');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process refund';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

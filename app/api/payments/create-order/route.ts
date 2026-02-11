@@ -80,14 +80,14 @@ export async function POST(req: NextRequest) {
     // Convert amount to paise (Razorpay expects amount in smallest currency unit)
     const amountInPaise = Math.round(booking.totalPrice * 100);
 
-    // Generate unique receipt ID
-    const receipt = `receipt_${bookingId}_${Date.now()}`;
+    // Generate unique transaction identifier
+    const transactionId = `txn_${bookingId}_${Date.now()}`;
 
     // Create Razorpay order
     const razorpayOrder = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
-      receipt,
+      receipt: transactionId,
       notes: {
         bookingId: bookingId.toString(),
         brandId: session.user.id,
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
       currency: 'INR',
       razorpayOrderId: razorpayOrder.id,
       status: 'created',
-      receipt,
+      receipt: transactionId,
       notes: {
         spaceName: booking.spaceName,
         duration: booking.duration,
