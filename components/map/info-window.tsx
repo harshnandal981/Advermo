@@ -4,6 +4,7 @@ import { InfoWindow as GoogleInfoWindow } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface InfoWindowProps {
   position: {
@@ -33,11 +34,15 @@ export default function InfoWindow({ position, space, onClose }: InfoWindowProps
     <GoogleInfoWindow position={position} onCloseClick={onClose}>
       <div className="max-w-[280px]">
         {space.images && space.images.length > 0 && (
-          <img
-            src={space.images[0]}
-            alt={space.name}
-            className="w-full h-32 object-cover rounded-lg mb-2"
-          />
+          <div className="relative w-full h-32 mb-2">
+            <Image
+              src={space.images[0]}
+              alt={space.name}
+              fill
+              className="object-cover rounded-lg"
+              sizes="280px"
+            />
+          </div>
         )}
         <h3 className="font-semibold text-sm mb-1">{space.name}</h3>
         <div className="flex items-center text-xs text-gray-500 mb-2">

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
+import connectDB from '@/lib/mongodb';
 import AdSpace from '@/lib/models/AdSpace';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase();
+    await connectDB();
 
     const searchParams = request.nextUrl.searchParams;
     
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       ]);
     } else {
       // Regular query without geospatial search
-      const sortOption = 
+      const sortOption: any = 
         sort === 'price' ? { price: 1 } :
         sort === 'rating' ? { rating: -1 } :
         sort === 'footfall' ? { dailyFootfall: -1 } :

@@ -35,7 +35,8 @@ export interface Host {
 }
 
 export type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'active' | 'completed' | 'cancelled';
-export type PaymentStatus = 'pending' | 'paid' | 'refunded';
+export type PaymentStatus = 'pending' | 'paid' | 'refunded' | 'success' | 'failed' | 'created';
+export type PaymentStatusType = PaymentStatus; // Alias for backward compatibility
 
 export interface Booking {
   _id: string;
@@ -184,4 +185,39 @@ export interface SearchFilters {
   minRating?: number;
   availability?: { startDate: Date; endDate: Date };
   sortBy?: 'distance' | 'price' | 'rating' | 'footfall';
+}
+
+// Razorpay payment types
+export interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
+  theme?: {
+    color?: string;
+  };
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+export interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+// Razorpay window extension
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
 }

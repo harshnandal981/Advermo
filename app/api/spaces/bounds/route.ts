@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
+import connectDB from '@/lib/mongodb';
 import AdSpace from '@/lib/models/AdSpace';
 
 export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase();
+    await connectDB();
 
     const searchParams = request.nextUrl.searchParams;
     
