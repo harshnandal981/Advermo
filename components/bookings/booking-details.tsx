@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Booking } from '@/types';
 import BookingStatusBadge from './booking-status-badge';
+import PaymentButton from '@/components/payments/payment-button';
+import PaymentStatus from '@/components/payments/payment-status';
+import InvoiceCard from '@/components/payments/invoice-card';
+import RefundDialog from '@/components/payments/refund-dialog';
 import { Button } from '@/components/ui/button';
 import { 
   Calendar, 
@@ -16,25 +20,32 @@ import {
   Ban,
   ArrowLeft,
   FileText,
-  Users
+  Users,
+  RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { adSpaces } from '@/lib/data';
+import { isRefundEligible } from '@/lib/payments/refund';
 
 interface BookingDetailsProps {
   booking: Booking;
   userRole: 'brand' | 'venue';
+  payment?: any;
 }
 
-export default function BookingDetails({ booking, userRole }: BookingDetailsProps) {
+export default function BookingDetails({ booking, userRole, payment }: BookingDetailsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
 
   // Get space details
   const space = adSpaces.find((s) => s.id === booking.spaceId);
   const thumbnail = space?.images[0] || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800';
+  
+  // Check refund eligibility
+  const canRequestRefund = userRole === 'brand' && isRefundEligible(booking);
 
   const handleAction = async (action: string) => {
     if (action === 'reject' && !rejectionReason) {
@@ -177,17 +188,53 @@ export default function BookingDetails({ booking, userRole }: BookingDetailsProp
             Payment Information
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Total Price</p>
-              <p className="text-2xl font-bold text-primary">₹{booking.totalPrice.toLocaleString()}</p>
+          {booking.isPaid && payment ? (
+            <div className="space-y-4">
+              <PaymentStatus
+                status={payment.status}
+                amount={payment.amount}
+                method={payment.method}
+                transactionId={payment.razorpayPaymentId}
+                completedAt={payment.completedAt}
+                receipt={payment.receipt}
+              />
+              
+              {/* Invoice Card */}
+              <InvoiceCard
+                booking={booking}
+                paymentId={payment.razorpayPaymentId}
+                transactionId={payment.razorpayOrderId}
+              />
             </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Payment Status</p>
-              <p className="font-medium capitalize">{booking.paymentStatus}</p>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Total Price</p>
+                  <p className="text-2xl font-bold text-primary">₹{booking.totalPrice.toLocaleString()}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Payment Status</p>
+                  <p className="font-medium capitalize">{booking.paymentStatus}</p>
+                </div>
+              </div>
+              
+              {/* Payment Button for unpaid bookings */}
+              {userRole === 'brand' && !booking.isPaid && booking.status !== 'cancelled' && booking.status !== 'rejected' && (
+                <div className="border-t pt-4">
+                  <PaymentButton
+                    bookingId={booking._id}
+                    amount={booking.totalPrice}
+                    onSuccess={() => router.refresh()}
+                  />
+                  <p className="mt-2 text-xs text-muted-foreground text-center">
+                    Complete payment within 24 hours to confirm your booking
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Parties Information */}
@@ -287,18 +334,40 @@ export default function BookingDetails({ booking, userRole }: BookingDetailsProp
 
           {/* Brand Actions */}
           {userRole === 'brand' && ['pending', 'confirmed'].includes(booking.status) && (
-            <Button
-              variant="outline"
-              onClick={() => handleAction('cancel')}
-              disabled={loading}
-              className="flex-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
-            >
-              <Ban className="h-4 w-4 mr-2" />
-              Cancel Booking
-            </Button>
+            <>
+              {canRequestRefund ? (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRefundDialog(true)}
+                  disabled={loading}
+                  className="flex-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Request Refund
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => handleAction('cancel')}
+                  disabled={loading}
+                  className="flex-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
+                >
+                  <Ban className="h-4 w-4 mr-2" />
+                  Cancel Booking
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>
+
+      {/* Refund Dialog */}
+      <RefundDialog
+        open={showRefundDialog}
+        onOpenChange={setShowRefundDialog}
+        booking={booking}
+        onSuccess={() => router.refresh()}
+      />
 
       {/* Reject Modal */}
       {showRejectModal && (
